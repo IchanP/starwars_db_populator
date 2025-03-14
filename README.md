@@ -20,3 +20,18 @@ Spin up the postgres database located in the docker folder
 cd ./docker
 docker-compose up -d
 ```
+
+## Generating schemas in Postgres
+
+Run the following two commands to prepare the migration and schema.
+
+```sh
+python3 manage.py makemigrations starwars
+python3 manage.py migrate starwars
+```
+
+Finally populate the database with
+
+```sh
+python3 manage.py load_starwars_data
+```
