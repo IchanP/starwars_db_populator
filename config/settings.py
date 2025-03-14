@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'swapi',
+    'starwars',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -79,9 +79,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'swapi_db',
+        'NAME': 'sw_db',
         'USER': 'postgres',
-        'PASSWORD': 'yourpassword',
+        'PASSWORD': 'example',
         'HOST': 'localhost',
         'PORT': '5432',
     }

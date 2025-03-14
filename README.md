@@ -14,4 +14,9 @@ pip install -r requirements.in
 
 ## Running the program
 
-# TODO - Include Postgres confiugration?
+Spin up the postgres database located in the docker folder
+
+```sh
+cd ./docker
+docker-compose up -d
+```

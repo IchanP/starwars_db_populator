@@ -10,4 +10,3 @@ class Command(BaseCommand):
         load_fixture('planets')
         load_fixture('vehicles')
         load_fixture('starships')
-

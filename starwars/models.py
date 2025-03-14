@@ -72,7 +72,7 @@ class People(DateTimeModel):
     birth_year = models.CharField(max_length=10, blank=True)
 
     gender = models.CharField(max_length=40, blank=True)
-
+    # TODO - Requires on_delete argument???
     homeworld = models.ForeignKey(Planet, related_name="residents")
 
 
