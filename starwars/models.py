@@ -23,7 +23,7 @@ class EditableModel(models.Model):
     A model with a boolean that determins the read/write state of the model
     """
 
-    editable = models.NullBooleanField()
+    editable = models.BooleanField(null=True, blank=True)
 
 
 class Planet(DateTimeModel):
@@ -73,7 +73,7 @@ class People(DateTimeModel):
 
     gender = models.CharField(max_length=40, blank=True)
     # TODO - Requires on_delete argument???
-    homeworld = models.ForeignKey(Planet, related_name="residents")
+    homeworld = models.ForeignKey(Planet, related_name="residents", on_delete=models.DO_NOTHING)
 
 
 class Transport(DateTimeModel):
@@ -152,7 +152,7 @@ class Species(DateTimeModel):
 
     average_lifespan = models.CharField(max_length=40)
 
-    homeworld = models.ForeignKey(Planet, blank=True, null=True)
+    omeworld = models.ForeignKey(Planet, on_delete=models.DO_NOTHING, null=True, blank=True)
 
     language = models.CharField(max_length=40)
 
