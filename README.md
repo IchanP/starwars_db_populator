@@ -35,3 +35,23 @@ Finally populate the database with
 ```sh
 python3 manage.py load_starwars_data
 ```
+
+## PgAdmin connection
+
+In case you want to check things:
+
+Open pgAdmin.
+Go to File → Add New Server.
+Under the **"General"** tab:
+
+Name: `postgres_db` (or anything you like)
+
+Under the **"Connection"** tab:
+
+Host name/address: `localhost`
+Port: `5432`
+Maintenance database: `sw_db`
+Username: `postgres`
+Password: `example`
+
+Click **"Save"**.

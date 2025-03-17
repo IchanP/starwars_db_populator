@@ -22,6 +22,7 @@ const schema = makeExecutableSchema({
 
 fastify.register(mercurius, {
   schema,
+  // TODO: Add resolvers here.
   graphiql: true
 })
 
