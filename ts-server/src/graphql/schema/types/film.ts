@@ -2,15 +2,15 @@ export const film = `
 type Film {
     id: ID!
     title: String!
-    episodeId: Int!
-    openingCrawl: String!
+    episode_id: Int!
+    opening_crawl: String!
     director: String!
     producer: String!
-    releaseDate: String!
+    release_date: String!
     characters: [Person!]!
     planets: [Planet!]!
     starships: [Starship!]!
     vehicles: [Vehicle!]!
     species: [Species!]!
   }
-`
+`;

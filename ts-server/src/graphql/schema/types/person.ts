@@ -2,14 +2,14 @@ export const person = `
 type Person {
   id: ID!
   name: String!
-  birthYear: String!
+  birth_year: String!
   gender: String!
   height: String
   mass: String
-  hairColor: String
-  skinColor: String
-  eyeColor: String
+  hair_color: String
+  skin_color: String
+  eye_color: String
   homeworld: Planet
   species: [Species!]!
 }
-`
+`;

@@ -7,7 +7,12 @@ export const resolvers = {
       const content = cxt as Context;
       // TODO prisma is undefined...
       console.log(content.prisma);
-      return await content.prisma.starwars_film.findMany();
+      const films = await content.prisma.starwars_film.findMany();
+      console.log(films);
+      return films.map((film) => ({
+        ...film,
+        id: film.id.toString(), // Convert BigInt to string
+      }));
     },
   },
 };
