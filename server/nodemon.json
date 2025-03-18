@@ -1,0 +1,12 @@
+{
+    "watch": [
+        "server.js",
+        "graphql/**/*",
+        "plugins/**/*",
+        ".env"
+    ],
+    "ext": "js,json",
+    "ignore": [
+        "node_modules/"
+    ]
+}
