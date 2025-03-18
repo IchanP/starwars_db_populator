@@ -4,16 +4,16 @@ type Starship {
   name: String!
   model: String!
   manufacturer: String!
-  costInCredits: String!
+  cost_in_credits: String!
   length: String!
-  maxAtmospheringSpeed: String!
+  max_atmosphering_speed: String!
   crew: String!
   passengers: String!
-  cargoCapacity: String!
+  cargo_capacity: String!
   consumables: String!
-  hyperdriveRating: String!
+  hyperdrive_rating: String!
   MGLT: String!
-  starshipClass: String!
+  starship_class: String!
   pilots: [Person!]!
 }
-`
+`;
