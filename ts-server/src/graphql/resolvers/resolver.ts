@@ -4,15 +4,16 @@ import { Context } from "../../context";
 export const resolvers = {
   Query: {
     films: async (_parent: any, args: any, cxt: any) => {
+      // TODO make boiler plate it's own function
       const content = cxt as Context;
-      // TODO prisma is undefined...
-      console.log(content.prisma);
-      const films = await content.prisma.starwars_film.findMany();
-      console.log(films);
-      return films.map((film) => ({
-        ...film,
-        id: film.id.toString(), // Convert BigInt to string
-      }));
+      return await content.prisma.starwars_film.findMany();
+    },
+    film: async (_parent: any, args: any, cxt: any) => {
+      const context = cxt as Context;
+      console.log(args);
+      return await context.prisma.starwars_film.findUnique({
+        where: { id: Number(args.id) },
+      });
     },
   },
 };
