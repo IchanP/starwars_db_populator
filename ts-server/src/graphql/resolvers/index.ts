@@ -13,7 +13,7 @@ export const withContext = async (
   return await callback(context);
 };
 
-const isFieldNode = (selection: SelectionNode): selection is FieldNode =>
+export const isFieldNode = (selection: SelectionNode): selection is FieldNode =>
   selection.kind === "Field";
 
 // NOTE - Not really sure how to type the context model...
@@ -42,6 +42,7 @@ export const findManyData = async <TModel extends keyof PrismaClient>(
         isFieldNode(selection) && selection.name.value === queryField
     )
   ) {
+    // TODO rewrite the query party?
     return await contextModel.findMany({
       where: { [whereProperty]: identifier },
       include: { [includeProperty]: true },

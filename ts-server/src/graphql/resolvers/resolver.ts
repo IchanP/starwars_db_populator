@@ -1,21 +1,19 @@
 import { IResolvers, MercuriusContext } from "mercurius";
 import { findManyData, withContext } from ".";
 import { GraphQLResolveInfo, SelectionNode } from "graphql";
-
-interface FilmRelatedData {
-  starwars_film_characters?: any[];
-  starwars_film_planets?: any[];
-  starwars_film_starships?: any[];
-  starwars_film_vehicles?: any[];
-  starwars_film_species?: any[];
-}
+import { filmResolver } from "./filmResolver";
+import { personResolver } from "./peopleResolver";
 
 export const resolvers: IResolvers = {
   Query: {
-    films: (_parent: any, args: any, cxt: any) =>
-      withContext(cxt, (context) => {
-        const films = context.prisma.starwars_film.findMany();
-        // TODO do unbatched queries...
+    films: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
+      withContext(cxt, async (context) => {
+        const tempFilms = await context.prisma.starwars_film.findMany();
+        const films = [];
+        for (let i = 0; i < tempFilms.length; i++) {
+          films[i] = await filmResolver(info, context, tempFilms[i]);
+        }
+        return films;
       }),
 
     film: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
@@ -24,90 +22,27 @@ export const resolvers: IResolvers = {
           where: { id: Number(args.id) },
         });
 
-        // Initialize an object to hold the related data
-        const relatedData: FilmRelatedData = {};
-
-        if (info.fieldNodes) {
-          const selections = info.fieldNodes[0].selectionSet
-            ?.selections as SelectionNode[];
-
-          relatedData.starwars_film_characters = await findManyData(
-            selections,
-            "characters",
-            context.prisma.starwars_film_characters,
-            film?.id,
-            "film_id",
-            "starwars_people"
-          );
-
-          relatedData.starwars_film_planets = await findManyData(
-            selections,
-            "planets",
-            context.prisma.starwars_film_planets,
-            film?.id,
-            "film_id",
-            "starwars_planet"
-          );
-
-          relatedData.starwars_film_starships = await findManyData(
-            selections,
-            "starships",
-            context.prisma.starwars_film_starships,
-            film?.id,
-            "film_id",
-            "starwars_starship"
-          );
-
-          relatedData.starwars_film_vehicles = await findManyData(
-            selections,
-            "vehicles",
-            context.prisma.starwars_film_vehicles,
-            film?.id,
-            "film_id",
-            "starwars_vehicle"
-          );
-
-          relatedData.starwars_film_species = await findManyData(
-            selections,
-            "species",
-            context.prisma.starwars_film_species,
-            film?.id,
-            "film_id",
-            "starwars_species"
-          );
-
-          const returnObject = {
-            ...film,
-            characters: relatedData.starwars_film_characters?.map(
-              (fc) => fc.starwars_people
-            ),
-            planets: relatedData.starwars_film_planets?.map(
-              (fp) => fp.starwars_planet
-            ),
-            starships: relatedData.starwars_film_starships?.map(
-              (fs) => fs.starwars_starship
-            ),
-            vehicles: relatedData.starwars_film_vehicles?.map(
-              (fv) => fv.starwars_vehicle
-            ),
-            species: relatedData.starwars_film_species?.map(
-              (fsp) => fsp.starwars_species
-            ),
-          };
-          // Transform the data to match the GraphQL schema
-          return returnObject;
-        }
+        return filmResolver(info, context, film);
       }),
 
-    people: (_parent: any, args: any, cxt: any) =>
-      withContext(cxt, (context) => context.prisma.starwars_people.findMany()),
+    people: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
+      withContext(cxt, async (context) => {
+        const tempPeople = await context.prisma.starwars_people.findMany();
+        const people = [];
+        for (let i = 0; i < tempPeople.length; i++) {
+          people[i] = await personResolver(info, context, tempPeople[i]);
+        }
+        return people;
+      }),
 
-    person: (_parent: any, args: any, cxt: any) =>
-      withContext(cxt, (context) =>
-        context.prisma.starwars_people.findUnique({
+    person: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
+      withContext(cxt, async (context) => {
+        const person = await context.prisma.starwars_people.findUnique({
           where: { id: Number(args.id) },
-        })
-      ),
+        });
+
+        return personResolver(info, context, person);
+      }),
 
     planets: (_parent: any, args: any, cxt: any) =>
       withContext(cxt, (context) => context.prisma.starwars_planet.findMany()),
