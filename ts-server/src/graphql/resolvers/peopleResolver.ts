@@ -1,6 +1,6 @@
 import { GraphQLResolveInfo, SelectionNode } from "graphql";
 import { Context } from "../../context";
-import { isFieldNode } from ".";
+import { findManyData, findUnique, isFieldNode } from ".";
 
 type Person = {
   id: number;
@@ -22,7 +22,12 @@ interface PersonRelatedData {
   homeworld?: any;
 }
 
-// TODO clean this up
+interface SpeciesPeople {
+  id: bigint;
+  species_id: number;
+  people_id: number;
+}
+
 export const personResolver = async (
   info: GraphQLResolveInfo,
   context: Context,
@@ -35,37 +40,32 @@ export const personResolver = async (
     const selections = info.fieldNodes[0].selectionSet
       ?.selections as SelectionNode[];
 
-    if (
-      selections.some(
-        (selection) =>
-          isFieldNode(selection) && selection.name.value === "species"
-      )
-    ) {
-      const speciesPeople =
-        await context.prisma.starwars_species_people.findMany({
-          where: { people_id: person?.id },
-        });
+    const speciesPeople = (await findManyData(
+      selections,
+      "species",
+      context.prisma.starwars_species_people,
+      person?.id,
+      "people_id"
+    )) as SpeciesPeople[];
 
-      if (speciesPeople) {
-        const speciesIds = speciesPeople.map((sp) => sp.species_id);
-        relatedData.species = [
-          ...(await context.prisma.starwars_species.findMany({
-            where: { id: { in: speciesIds } },
-          })),
-        ];
-      }
+    // Don't really like having this here but whatever for now
+    if (speciesPeople) {
+      const speciesIds = speciesPeople.map((sp) => sp.species_id);
+      relatedData.species = [
+        ...(await context.prisma.starwars_species.findMany({
+          where: { id: { in: speciesIds } },
+        })),
+      ];
     }
 
-    if (
-      selections.some(
-        (selection) =>
-          isFieldNode(selection) && selection.name.value === "homeworld"
-      )
-    ) {
-      relatedData.homeworld = await context.prisma.starwars_planet.findUnique({
-        where: { id: person?.homeworld_id },
-      });
-    }
+    relatedData.homeworld = await findUnique(
+      selections,
+      "homeworld",
+      context.prisma.starwars_planet,
+      person?.homeworld_id,
+      "id"
+    );
+
     return {
       ...person,
       ...relatedData,
