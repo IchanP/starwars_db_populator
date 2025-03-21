@@ -689,9 +689,8 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { films { id title episodeId releaseDate director producer characters { id name } planets { id name } species { id name } } }&quot;&#xd;
-}&#xd;
-</stringProp>
+  &quot;query&quot;: &quot;query { films { id title episode_id release_date director producer characters { id name species { id name language classification designation } } planets { id name population } species { id name homeworld { id name population } } } }&quot;&#xd;
+}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -724,9 +723,7 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { films { id title episodeId openingCrawl director producer releaseDate characters { id name birthYear gender height mass hairColor skinColor eyeColor homeworld { id name population } species { id name classification designation averageHeight skinColors hairColors eyeColors averageLifespan language } } planets { id name diameter rotationPeriod orbitalPeriod gravity population climate terrain surfaceWater } species { id name classification designation averageHeight skinColors hairColors eyeColors averageLifespan language homeworld { id name } } starships { id name model manufacturer costInCredits length maxAtmospheringSpeed crew passengers cargoCapacity consumables hyperdriveRating MGLT starshipClass pilots { id name } } vehicles { id name model manufacturer costInCredits length maxAtmospheringSpeed crew passengers cargoCapacity consumables vehicleClass pilots { id name } } } }&quot;&#xd;
-}&#xd;
+                <stringProp name="Argument.value">{&quot;query&quot;:&quot;query { films { id title episode_id opening_crawl director producer release_date characters { id name birth_year gender height mass hair_color skin_color eye_color homeworld { id name population diameter rotation_period orbital_period gravity climate terrain surface_water } } planets { id name diameter rotation_period orbital_period gravity population climate terrain surface_water } species { id name classification designation average_height skin_colors hair_colors eye_colors average_lifespan language homeworld { id name population diameter rotation_period orbital_period gravity climate terrain surface_water } } starships { id } vehicles { id } } }&quot;}&#xd;
 </stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
