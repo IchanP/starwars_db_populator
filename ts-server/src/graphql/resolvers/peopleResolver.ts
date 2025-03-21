@@ -22,7 +22,7 @@ interface PersonRelatedData {
   homeworld?: any;
 }
 
-interface SpeciesPeople {
+export interface SpeciesPeople {
   id: bigint;
   species_id: number;
   people_id: number;
