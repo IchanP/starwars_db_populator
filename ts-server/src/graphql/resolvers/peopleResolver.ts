@@ -1,6 +1,6 @@
 import { GraphQLResolveInfo, SelectionNode } from "graphql";
 import { Context } from "../../context";
-import { findManyData, findUnique, isFieldNode } from ".";
+import { findManyData, findManyIn, findUnique, isFieldNode } from ".";
 
 type Person = {
   id: number;
@@ -50,12 +50,12 @@ export const personResolver = async (
 
     // Don't really like having this here but whatever for now
     if (speciesPeople) {
-      const speciesIds = speciesPeople.map((sp) => sp.species_id);
-      relatedData.species = [
-        ...(await context.prisma.starwars_species.findMany({
-          where: { id: { in: speciesIds } },
-        })),
-      ];
+      relatedData.species = await findManyIn(
+        context.prisma.starwars_species,
+        speciesPeople,
+        "species_id",
+        "id"
+      );
     }
 
     relatedData.homeworld = await findUnique(

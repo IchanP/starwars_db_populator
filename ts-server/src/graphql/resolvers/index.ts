@@ -72,6 +72,28 @@ function isSelectionSome(queryField: string, selections: SelectionNode[]) {
     (selection) => isFieldNode(selection) && selection.name.value === queryField
   );
 }
+/**
+ *
+ * @param {any} context  The prisma context model.
+ * Example: context.prisma.starwars_film_characters .
+ * @param {any[]} itemArray - The array containing the the identifiers to find.
+ * @param {string} itemProperty - The property to extract from the items in the itemArray.
+ * @param {string} whereProperty - The property that needs to match the itemProperty.
+ * @returns {any[]} - Returns an array containing the found items.
+ */
+export async function findManyIn(
+  context: any,
+  itemArray: any[],
+  itemProperty: string,
+  whereProperty: string
+) {
+  const findProperties = itemArray.map((item) => item[itemProperty]);
+  return [
+    ...(await context.findMany({
+      where: { [whereProperty]: { in: findProperties } },
+    })),
+  ];
+}
 
 function makeQuery(
   identifier: any,

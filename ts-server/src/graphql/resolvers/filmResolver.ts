@@ -1,6 +1,7 @@
 import { GraphQLResolveInfo, SelectionNode } from "graphql";
 import { Context } from "../../context";
-import { findManyData } from ".";
+import { findManyData, findManyIn } from ".";
+import { planet } from "../schema/types/planet";
 
 type Film = {
   id: number;
@@ -34,25 +35,41 @@ export const filmResolver = async (
     const selections = info.fieldNodes[0].selectionSet
       ?.selections as SelectionNode[];
 
-    relatedData.starwars_film_characters = await findManyData(
+    const filmCharacters = (await findManyData(
       selections,
       "characters",
       context.prisma.starwars_film_characters,
       film?.id,
-      "film_id",
-      "starwars_people"
-    );
+      "film_id"
+    )) as { people_id: number }[];
 
-    relatedData.starwars_film_planets = await findManyData(
+    if (filmCharacters) {
+      relatedData.starwars_film_characters = await findManyIn(
+        context.prisma.starwars_people,
+        filmCharacters,
+        "people_id",
+        "id"
+      );
+    }
+
+    const filmPlanets = (await findManyData(
       selections,
       "planets",
       context.prisma.starwars_film_planets,
       film?.id,
-      "film_id",
-      "starwars_planet"
-    );
+      "film_id"
+    )) as { planet_id: number }[];
 
-    relatedData.starwars_film_starships = await findManyData(
+    if (filmPlanets) {
+      relatedData.starwars_film_planets = await findManyIn(
+        context.prisma.starwars_planet,
+        filmPlanets,
+        "planet_id",
+        "id"
+      );
+    }
+
+    const filmStarships = await findManyData(
       selections,
       "starships",
       context.prisma.starwars_film_starships,
@@ -61,16 +78,33 @@ export const filmResolver = async (
       "starwars_starship"
     );
 
-    relatedData.starwars_film_vehicles = await findManyData(
+    if (filmStarships) {
+      relatedData.starwars_film_starships = await findManyIn(
+        context.prisma.starwars_starship,
+        filmStarships,
+        "starship_id",
+        "transport_ptr_id"
+      );
+    }
+
+    const filmVehicles = await findManyData(
       selections,
       "vehicles",
       context.prisma.starwars_film_vehicles,
       film?.id,
-      "film_id",
-      "starwars_vehicle"
+      "film_id"
     );
 
-    relatedData.starwars_film_species = await findManyData(
+    if (filmVehicles) {
+      relatedData.starwars_film_vehicles = await findManyIn(
+        context.prisma.starwars_vehicle,
+        filmVehicles,
+        "vehicle_id",
+        "transport_ptr_id"
+      );
+    }
+
+    const filmSpecies = await findManyData(
       selections,
       "species",
       context.prisma.starwars_film_species,
@@ -79,23 +113,22 @@ export const filmResolver = async (
       "starwars_species"
     );
 
+    if (filmSpecies) {
+      relatedData.starwars_film_species = await findManyIn(
+        context.prisma.starwars_species,
+        filmSpecies,
+        "species_id",
+        "id"
+      );
+    }
+
     return {
       ...film,
-      characters: relatedData.starwars_film_characters?.map(
-        (fc) => fc.starwars_people
-      ),
-      planets: relatedData.starwars_film_planets?.map(
-        (fp) => fp.starwars_planet
-      ),
-      starships: relatedData.starwars_film_starships?.map(
-        (fs) => fs.starwars_starship
-      ),
-      vehicles: relatedData.starwars_film_vehicles?.map(
-        (fv) => fv.starwars_vehicle
-      ),
-      species: relatedData.starwars_film_species?.map(
-        (fsp) => fsp.starwars_species
-      ),
+      characters: relatedData.starwars_film_characters,
+      planets: relatedData.starwars_film_planets,
+      starships: relatedData.starwars_film_starships,
+      vehicles: relatedData.starwars_film_vehicles,
+      species: relatedData.starwars_film_species,
     };
   }
 };
