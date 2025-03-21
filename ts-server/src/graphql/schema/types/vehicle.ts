@@ -11,7 +11,7 @@ type Vehicle {
   passengers: String!
   cargo_capacity: String!
   consumables: String!
-  vehicleClass: String!
+  vehicle_class: String!
   pilots: [Person!]!
 }
 `;
