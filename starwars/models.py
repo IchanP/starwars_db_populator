@@ -9,7 +9,7 @@ from django.db import models
 
 class DateTimeModel(models.Model):
     """ A base model with created and edited datetime fields """
-
+    
     class Meta:
         abstract = True
 
@@ -31,6 +31,8 @@ class Planet(DateTimeModel):
 
     def __unicode__(self):
         return self.name
+    
+    id = models.AutoField(primary_key=True)
 
     name = models.CharField(max_length=100)
 
@@ -57,6 +59,8 @@ class People(DateTimeModel):
     def __unicode__(self):
         return self.name
 
+    id = models.AutoField(primary_key=True)
+
     name = models.CharField(max_length=100)
 
     height = models.CharField(max_length=10, blank=True)
@@ -80,6 +84,8 @@ class Transport(DateTimeModel):
 
     def __unicode__(self):
         return self.name
+
+    id = models.AutoField(primary_key=True)
 
     name = models.CharField(max_length=40)
 
@@ -136,6 +142,8 @@ class Species(DateTimeModel):
     def __unicode__(self):
         return self.name
 
+    id = models.AutoField(primary_key=True)
+
     name = models.CharField(max_length=40)
 
     classification = models.CharField(max_length=40)
@@ -164,6 +172,8 @@ class Film(DateTimeModel):
 
     def __unicode__(self):
         return self.title
+
+    id = models.AutoField(primary_key=True)
 
     title = models.CharField(max_length=100)
 

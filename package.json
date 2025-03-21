@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "@graphql-tools/merge": "^9.0.24",
-    "@graphql-tools/schema": "^10.0.23",
-    "graphql": "^16.10.0"
-  }
-}
