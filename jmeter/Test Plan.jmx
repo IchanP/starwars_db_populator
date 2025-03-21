@@ -5,6 +5,8 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Baseline">
@@ -32,7 +34,7 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { person(id: \&quot;${person_id}\&quot;) { name, birthYear, gender } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { person(id: \&quot;${person_id}\&quot;) { name, birth_year, gender } }&quot;&#xd;
 }&#xd;
 </stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
@@ -53,8 +55,9 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { film(id: \&quot;${film_id}\&quot;) { id title episodeId openingCrawl director producer releaseDate starships { id name } vehicles { id name } planets { id name population gravity } characters { id name } species { id name } } } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { film(id: \&quot;${film_id}\&quot;) { id title episode_id opening_crawl director producer release_date starships { id name pilots { id name birth_year gender height } } vehicles { id name } planets { id name population gravity } characters { id name species { id name language classification designation } } species { id name } } }&quot;&#xd;
 }&#xd;
+&#xd;
 &#xd;
 &#xd;
 &#xd;
@@ -90,8 +93,9 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { people { id name birthYear gender } films { id title episodeId releaseDate } planets { id name population gravity } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { people { id name birth_year gender } films { id title episode_id release_date } planets { id name population gravity } }&quot;&#xd;
 }&#xd;
+&#xd;
 &#xd;
 &#xd;
 </stringProp>
@@ -127,7 +131,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Simple Query">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Simple Query" enabled="true">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">4000</stringProp>
           <stringProp name="HTTPSampler.path">/</stringProp>
@@ -139,7 +143,7 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { person(id: \&quot;${person_id}\&quot;) { name, birthYear, gender } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { person(id: \&quot;${person_id}\&quot;) { name, birth_year, gender } }&quot;&#xd;
 }&#xd;
 </stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
@@ -148,7 +152,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Nested Query">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Nested Query" enabled="true">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">4000</stringProp>
           <stringProp name="HTTPSampler.path">/</stringProp>
@@ -160,8 +164,9 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { film(id: \&quot;${film_id}\&quot;) { id title episodeId openingCrawl director producer releaseDate starships { id name } vehicles { id name } planets { id name population gravity } characters { id name } species { id name } } } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { film(id: \&quot;${film_id}\&quot;) { id title episode_id opening_crawl director producer release_date starships { id name pilots { id name birth_year gender height } } vehicles { id name } planets { id name population gravity } characters { id name species { id name language classification designation } } species { id name } } }&quot;&#xd;
 }&#xd;
+&#xd;
 &#xd;
 &#xd;
 &#xd;
@@ -172,7 +177,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Simple (person ids)">
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Simple (person ids)" enabled="true">
           <stringProp name="delimiter">,</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
           <stringProp name="filename">/home/daniel/src/vt-25-thesis/starwars_db_populator/jmeter/simple.csv</stringProp>
@@ -197,8 +202,9 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { people { id name birthYear gender } films { id title episodeId releaseDate } planets { id name population gravity } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { people { id name birth_year gender } films { id title episode_id release_date } planets { id name population gravity } }&quot;&#xd;
 }&#xd;
+&#xd;
 &#xd;
 &#xd;
 </stringProp>
@@ -208,7 +214,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Nested (film ids)">
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Nested (film ids)" enabled="true">
           <stringProp name="filename">/home/daniel/src/vt-25-thesis/starwars_db_populator/jmeter/nested.csv</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
           <stringProp name="variableNames">film_id</stringProp>
@@ -234,7 +240,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Simple Query">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Simple Query" enabled="true">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">4000</stringProp>
           <stringProp name="HTTPSampler.path">/</stringProp>
@@ -246,7 +252,7 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { person(id: \&quot;${person_id}\&quot;) { name, birthYear, gender } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { person(id: \&quot;${person_id}\&quot;) { name, birth_year, gender } }&quot;&#xd;
 }&#xd;
 </stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
@@ -255,7 +261,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Nested Query">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Nested Query" enabled="true">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">4000</stringProp>
           <stringProp name="HTTPSampler.path">/</stringProp>
@@ -267,8 +273,9 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { film(id: \&quot;${film_id}\&quot;) { id title episodeId openingCrawl director producer releaseDate starships { id name } vehicles { id name } planets { id name population gravity } characters { id name } species { id name } } } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { film(id: \&quot;${film_id}\&quot;) { id title episode_id opening_crawl director producer release_date starships { id name pilots { id name birth_year gender height } } vehicles { id name } planets { id name population gravity } characters { id name species { id name language classification designation } } species { id name } } }&quot;&#xd;
 }&#xd;
+&#xd;
 &#xd;
 &#xd;
 &#xd;
@@ -279,7 +286,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Simple (person ids)">
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Simple (person ids)" enabled="true">
           <stringProp name="delimiter">,</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
           <stringProp name="filename">/home/daniel/src/vt-25-thesis/starwars_db_populator/jmeter/simple.csv</stringProp>
@@ -292,7 +299,7 @@
           <stringProp name="TestPlan.comments">Used for simple query sampler</stringProp>
         </CSVDataSet>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Big Query">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Big Query" enabled="true">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">4000</stringProp>
           <stringProp name="HTTPSampler.path">/</stringProp>
@@ -304,8 +311,9 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { people { id name birthYear gender } films { id title episodeId releaseDate } planets { id name population gravity } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { people { id name birth_year gender } films { id title episode_id release_date } planets { id name population gravity } }&quot;&#xd;
 }&#xd;
+&#xd;
 &#xd;
 &#xd;
 </stringProp>
@@ -341,7 +349,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Simple Query">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Simple Query" enabled="true">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">4000</stringProp>
           <stringProp name="HTTPSampler.path">/</stringProp>
@@ -353,7 +361,7 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { person(id: \&quot;${person_id}\&quot;) { name, birthYear, gender } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { person(id: \&quot;${person_id}\&quot;) { name, birth_year, gender } }&quot;&#xd;
 }&#xd;
 </stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
@@ -362,7 +370,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Nested Query">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Nested Query" enabled="true">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">4000</stringProp>
           <stringProp name="HTTPSampler.path">/</stringProp>
@@ -374,8 +382,9 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { film(id: \&quot;${film_id}\&quot;) { id title episodeId openingCrawl director producer releaseDate starships { id name } vehicles { id name } planets { id name population gravity } characters { id name } species { id name } } } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { film(id: \&quot;${film_id}\&quot;) { id title episode_id opening_crawl director producer release_date starships { id name pilots { id name birth_year gender height } } vehicles { id name } planets { id name population gravity } characters { id name species { id name language classification designation } } species { id name } } }&quot;&#xd;
 }&#xd;
+&#xd;
 &#xd;
 &#xd;
 &#xd;
@@ -399,7 +408,7 @@
           <stringProp name="TestPlan.comments">Used for simple query sampler</stringProp>
         </CSVDataSet>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Big Query">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Big Query" enabled="true">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">4000</stringProp>
           <stringProp name="HTTPSampler.path">/</stringProp>
@@ -411,8 +420,9 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { people { id name birthYear gender } films { id title episodeId releaseDate } planets { id name population gravity } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { people { id name birth_year gender } films { id title episode_id release_date } planets { id name population gravity } }&quot;&#xd;
 }&#xd;
+&#xd;
 &#xd;
 &#xd;
 </stringProp>
@@ -448,7 +458,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Simple Query">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Simple Query" enabled="true">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">4000</stringProp>
           <stringProp name="HTTPSampler.path">/</stringProp>
@@ -460,7 +470,7 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { person(id: \&quot;${person_id}\&quot;) { name, birthYear, gender } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { person(id: \&quot;${person_id}\&quot;) { name, birth_year, gender } }&quot;&#xd;
 }&#xd;
 </stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
@@ -469,7 +479,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Nested Query">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Nested Query" enabled="true">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">4000</stringProp>
           <stringProp name="HTTPSampler.path">/</stringProp>
@@ -481,8 +491,9 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { film(id: \&quot;${film_id}\&quot;) { id title episodeId openingCrawl director producer releaseDate starships { id name } vehicles { id name } planets { id name population gravity } characters { id name } species { id name } } } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { film(id: \&quot;${film_id}\&quot;) { id title episode_id opening_crawl director producer release_date starships { id name pilots { id name birth_year gender height } } vehicles { id name } planets { id name population gravity } characters { id name species { id name language classification designation } } species { id name } } }&quot;&#xd;
 }&#xd;
+&#xd;
 &#xd;
 &#xd;
 &#xd;
@@ -493,7 +504,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Simple (person ids)">
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Simple (person ids)" enabled="true">
           <stringProp name="delimiter">,</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
           <stringProp name="filename">/home/daniel/src/vt-25-thesis/starwars_db_populator/jmeter/simple.csv</stringProp>
@@ -506,7 +517,7 @@
           <stringProp name="TestPlan.comments">Used for simple query sampler</stringProp>
         </CSVDataSet>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Big Query">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Big Query" enabled="true">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">4000</stringProp>
           <stringProp name="HTTPSampler.path">/</stringProp>
@@ -518,8 +529,9 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { people { id name birthYear gender } films { id title episodeId releaseDate } planets { id name population gravity } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { people { id name birth_year gender } films { id title episode_id release_date } planets { id name population gravity } }&quot;&#xd;
 }&#xd;
+&#xd;
 &#xd;
 &#xd;
 </stringProp>
@@ -529,7 +541,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Nested (film ids)">
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Nested (film ids)" enabled="true">
           <stringProp name="filename">/home/daniel/src/vt-25-thesis/starwars_db_populator/jmeter/nested.csv</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
           <stringProp name="variableNames">film_id</stringProp>
@@ -555,7 +567,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Simple Query">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Simple Query" enabled="true">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">4000</stringProp>
           <stringProp name="HTTPSampler.path">/</stringProp>
@@ -567,7 +579,7 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { person(id: \&quot;${person_id}\&quot;) { name, birthYear, gender } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { person(id: \&quot;${person_id}\&quot;) { name, birth_year, gender } }&quot;&#xd;
 }&#xd;
 </stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
@@ -576,7 +588,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Nested Query">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Nested Query" enabled="true">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">4000</stringProp>
           <stringProp name="HTTPSampler.path">/</stringProp>
@@ -588,8 +600,9 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { film(id: \&quot;${film_id}\&quot;) { id title episodeId openingCrawl director producer releaseDate starships { id name } vehicles { id name } planets { id name population gravity } characters { id name } species { id name } } } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { film(id: \&quot;${film_id}\&quot;) { id title episode_id opening_crawl director producer release_date starships { id name pilots { id name birth_year gender height } } vehicles { id name } planets { id name population gravity } characters { id name species { id name language classification designation } } species { id name } } }&quot;&#xd;
 }&#xd;
+&#xd;
 &#xd;
 &#xd;
 &#xd;
@@ -613,7 +626,7 @@
           <stringProp name="TestPlan.comments">Used for simple query sampler</stringProp>
         </CSVDataSet>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Big Query">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Big Query" enabled="true">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">4000</stringProp>
           <stringProp name="HTTPSampler.path">/</stringProp>
@@ -625,8 +638,9 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;query&quot;: &quot;query { people { id name birthYear gender } films { id title episodeId releaseDate } planets { id name population gravity } }&quot;&#xd;
+  &quot;query&quot;: &quot;query { people { id name birth_year gender } films { id title episode_id release_date } planets { id name population gravity } }&quot;&#xd;
 }&#xd;
+&#xd;
 &#xd;
 &#xd;
 </stringProp>
@@ -636,7 +650,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Nested (film ids)">
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Nested (film ids)" enabled="true">
           <stringProp name="filename">/home/daniel/src/vt-25-thesis/starwars_db_populator/jmeter/nested.csv</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
           <stringProp name="variableNames">film_id</stringProp>
@@ -649,7 +663,7 @@
         </CSVDataSet>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Optimization - &quot;correct&quot; fetch">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Optimization - &quot;correct&quot; fetch" enabled="true">
         <intProp name="ThreadGroup.num_threads">100</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <longProp name="ThreadGroup.duration">300</longProp>
