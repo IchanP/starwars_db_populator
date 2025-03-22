@@ -5,6 +5,7 @@ import {
   findManyData,
   findManyIn,
   findUnique,
+  isQueryNested,
   isSelectionSome,
 } from ".";
 import { planet } from "../schema/types/planet";
@@ -50,19 +51,25 @@ export const filmResolver = async (
       "film_id"
     )) as { people_id: number }[];
 
+    // TODO cleanup
     if (filmCharacters) {
-      relatedData.starwars_film_characters = await findManyIn(
-        context.prisma.starwars_people,
-        filmCharacters,
-        "people_id",
-        "id"
-      );
+      const characterSelection = findFieldNode(selections, "characters");
+      if (isQueryNested(characterSelection, "homeworld"))
+        relatedData.starwars_film_characters = await findManyIn(
+          context.prisma.starwars_people,
+          filmCharacters,
+          "people_id",
+          "id"
+        );
 
-      // TODO make this conditional
-      for (const character of relatedData.starwars_film_characters) {
-        character.homeworld = await context.prisma.starwars_planet.findUnique({
-          where: { id: character.homeworld_id },
-        });
+      if (relatedData.starwars_film_characters) {
+        for (const character of relatedData.starwars_film_characters) {
+          character.homeworld = await context.prisma.starwars_planet.findUnique(
+            {
+              where: { id: character.homeworld_id },
+            }
+          );
+        }
       }
     }
 
@@ -103,15 +110,8 @@ export const filmResolver = async (
 
       const starshipSelection = findFieldNode(selections, "starships");
 
-      if (starshipSelection && starshipSelection.selectionSet) {
-        const hasPilotsField = isSelectionSome(
-          "pilots",
-          starshipSelection.selectionSet.selections
-        );
-
-        if (hasPilotsField) {
-          await findStarshipPilots(relatedData, selections, context);
-        }
+      if (isQueryNested(starshipSelection, "pilots")) {
+        await findStarshipPilots(relatedData, selections, context);
       }
     }
 

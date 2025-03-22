@@ -121,3 +121,14 @@ export function findFieldNode(selection: SelectionNode[], nameValue: string) {
       selection.kind === "Field" && selection.name.value === nameValue
   );
 }
+
+export function isQueryNested(
+  selection: FieldNode | undefined,
+  queryField: string
+) {
+  return (
+    selection &&
+    selection.selectionSet &&
+    isSelectionSome(queryField, selection.selectionSet.selections)
+  );
+}
