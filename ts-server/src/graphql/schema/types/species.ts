@@ -4,13 +4,13 @@ type Species {
   name: String!
   classification: String!
   designation: String!
-  averageHeight: String!
-  skinColors: String!
-  hairColors: String!
-  eyeColors: String!
-  averageLifespan: String!
+  average_height: String!
+  skin_colors: String!
+  hair_colors: String!
+  eye_colors: String!
+  average_lifespan: String!
   language: String!
   homeworld: Planet
   people: [Person!]!
 }
-`
+`;

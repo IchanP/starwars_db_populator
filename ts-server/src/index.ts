@@ -1,13 +1,21 @@
-import fastify from "fastify";
+import fastify, { FastifyInstance } from "fastify";
 import mercurius from "mercurius";
 import postgres from "./plugins/postgres";
 import { typeDefs } from "./graphql/schema/mergeTypeDef";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import { context } from "./context";
+import { PrismaClient } from "@prisma/client";
+import { resolvers } from "./graphql/resolvers/resolver";
+import { Context } from "./context";
+
+interface CustomServer extends FastifyInstance {
+  prisma: PrismaClient;
+}
 
 const server = fastify({
   logger: true,
-});
+}) as unknown as CustomServer;
+
+server.decorate("prisma", new PrismaClient());
 
 server.get("/", function (request, reply) {
   reply.send({ hello: "world" });
@@ -22,10 +30,13 @@ const schema = makeExecutableSchema({
 
 server.register(mercurius, {
   schema,
-  // TODO add resolvers here.
+  resolvers,
   graphiql: true,
-  // TODO make sure this syntax works
-  context: () => context,
+  context: (request, reply): Partial<Context> => {
+    return {
+      prisma: server.prisma,
+    };
+  },
 });
 
 server.listen({ port: 4000 }, (err, address) => {
