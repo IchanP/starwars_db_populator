@@ -1,9 +1,7 @@
 // Helper methods for resolving data
 
-import { Prisma, PrismaClient } from "@prisma/client";
 import { Context } from "../../context";
 import { FieldNode, SelectionNode } from "graphql";
-import { Selection } from "@prisma/client/runtime/library";
 
 // Helper function to handle common logic
 export const withContext = async (
@@ -30,7 +28,7 @@ export const isFieldNode = (selection: SelectionNode): selection is FieldNode =>
  * @param {string} includeProperty - The prisma model to include in the return object. Can be null.
  * @returns {array<any>} - Returns an array of the objects or null.
  */
-export const findManyData = async <TModel extends keyof PrismaClient>(
+export const findManyData = async (
   selections: SelectionNode[],
   queryField: string,
   contextModel: any,

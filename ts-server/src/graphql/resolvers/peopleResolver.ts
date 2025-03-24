@@ -1,6 +1,6 @@
 import { GraphQLResolveInfo, SelectionNode } from "graphql";
 import { Context } from "../../context";
-import { findManyData, findManyIn, findUnique, isFieldNode } from ".";
+import { findManyData, findManyIn, findUnique } from ".";
 
 export type Person = {
   id: number;

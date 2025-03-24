@@ -61,8 +61,13 @@ export const filmResolver = async (
       );
       // Find nested homeworld field on character
       const characterSelection = findFieldNode(selections, "characters");
-      if (isQueryNested(characterSelection, "homeworld"))
+      if (isQueryNested(characterSelection, "homeworld")) {
         await findCharacterHomeworld(relatedData, context);
+      }
+      // Find nested species field on character
+      if (isQueryNested(characterSelection, "species")) {
+        await findCharacterSpecies(relatedData, context);
+      }
     }
 
     //  Find planets
@@ -214,6 +219,33 @@ async function findSpeciesHomeworld(
       if (!specie.homeworld_id) continue;
       specie.homeworld = await context.prisma.starwars_planet.findUnique({
         where: { id: specie?.homeworld_id },
+      });
+    }
+  }
+}
+
+async function findCharacterSpecies(
+  relatedData: FilmRelatedData,
+  context: Context
+) {
+  if (relatedData.starwars_film_characters) {
+    for (const character of relatedData.starwars_film_characters) {
+      // Rather abstract this away into index but keeping it
+      //  here for now since there's no point generalizing yet
+      const speciesRecord =
+        await context.prisma.starwars_species_people.findFirst({
+          where: {
+            people_id: Number(character?.id),
+          },
+          select: {
+            species_id: true,
+          },
+        });
+
+      if (!speciesRecord?.species_id) continue;
+
+      character.species = await context.prisma.starwars_species.findUnique({
+        where: { id: speciesRecord?.species_id },
       });
     }
   }
