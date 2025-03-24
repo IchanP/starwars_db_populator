@@ -51,26 +51,17 @@ export const filmResolver = async (
       "film_id"
     )) as { people_id: number }[];
 
-    // TODO cleanup
     if (filmCharacters) {
+      relatedData.starwars_film_characters = await findManyIn(
+        context.prisma.starwars_people,
+        filmCharacters,
+        "people_id",
+        "id"
+      );
+
       const characterSelection = findFieldNode(selections, "characters");
       if (isQueryNested(characterSelection, "homeworld"))
-        relatedData.starwars_film_characters = await findManyIn(
-          context.prisma.starwars_people,
-          filmCharacters,
-          "people_id",
-          "id"
-        );
-
-      if (relatedData.starwars_film_characters) {
-        for (const character of relatedData.starwars_film_characters) {
-          character.homeworld = await context.prisma.starwars_planet.findUnique(
-            {
-              where: { id: character.homeworld_id },
-            }
-          );
-        }
-      }
+        await findCharacterHomeworld(relatedData, context);
     }
 
     //  Find planets
@@ -190,6 +181,19 @@ async function findStarshipPilots(
           "id"
         )
       );
+    }
+  }
+}
+
+async function findCharacterHomeworld(
+  relatedData: FilmRelatedData,
+  context: Context
+) {
+  if (relatedData.starwars_film_characters) {
+    for (const character of relatedData.starwars_film_characters) {
+      character.homeworld = await context.prisma.starwars_planet.findUnique({
+        where: { id: character.homeworld_id },
+      });
     }
   }
 }
