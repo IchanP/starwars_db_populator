@@ -10,6 +10,6 @@ type Person {
   skin_color: String
   eye_color: String
   homeworld: Planet
-  species: [Species!]!
+  species: Species!
 }
 `;
