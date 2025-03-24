@@ -43,6 +43,7 @@ export const filmResolver = async (
     const selections = info.fieldNodes[0].selectionSet
       ?.selections as SelectionNode[];
 
+    // Find characters
     const filmCharacters = (await findManyData(
       selections,
       "characters",
@@ -58,7 +59,7 @@ export const filmResolver = async (
         "people_id",
         "id"
       );
-
+      // Find nested homeworld field on character
       const characterSelection = findFieldNode(selections, "characters");
       if (isQueryNested(characterSelection, "homeworld"))
         await findCharacterHomeworld(relatedData, context);
@@ -106,6 +107,7 @@ export const filmResolver = async (
       }
     }
 
+    // Find vehicles
     const filmVehicles = await findManyData(
       selections,
       "vehicles",
@@ -123,6 +125,7 @@ export const filmResolver = async (
       );
     }
 
+    // Find species
     const filmSpecies = await findManyData(
       selections,
       "species",
@@ -139,6 +142,11 @@ export const filmResolver = async (
         "species_id",
         "id"
       );
+
+      const speciesSelection = findFieldNode(selections, "species");
+      if (isQueryNested(speciesSelection, "homeworld")) {
+        await findSpeciesHomeworld(relatedData, context);
+      }
     }
 
     return {
@@ -171,7 +179,6 @@ async function findStarshipPilots(
     );
     starship.pilots = [];
     for (const obj of pilotIds) {
-      // TODO... fix this somehow
       starship.pilots?.push(
         await findUnique(
           selections,
@@ -193,6 +200,20 @@ async function findCharacterHomeworld(
     for (const character of relatedData.starwars_film_characters) {
       character.homeworld = await context.prisma.starwars_planet.findUnique({
         where: { id: character.homeworld_id },
+      });
+    }
+  }
+}
+
+async function findSpeciesHomeworld(
+  relatedData: FilmRelatedData,
+  context: Context
+) {
+  if (relatedData.starwars_film_species) {
+    for (const specie of relatedData.starwars_film_species) {
+      if (!specie.homeworld_id) continue;
+      specie.homeworld = await context.prisma.starwars_planet.findUnique({
+        where: { id: specie?.homeworld_id },
       });
     }
   }
