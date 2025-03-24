@@ -3,6 +3,7 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { Context } from "../../context";
 import { FieldNode, SelectionNode } from "graphql";
+import { Selection } from "@prisma/client/runtime/library";
 
 // Helper function to handle common logic
 export const withContext = async (
@@ -18,6 +19,7 @@ export const isFieldNode = (selection: SelectionNode): selection is FieldNode =>
 
 // NOTE - Not really sure how to type the context model...
 /**
+ * Fetches from the prisma context returning an array of the found item.
  *
  * @param {SelectionNode[]} selections - Array of field nodes to match with queryField.
  * @param {string} queryField - The query field that the selection must contain for the db search to execute.
@@ -43,6 +45,7 @@ export const findManyData = async <TModel extends keyof PrismaClient>(
 };
 
 /**
+ * Fetches a unique item from the context model.
  *
  * @param {SelectionNode[]} selections - Array of field nodes to match with queryField.
  * @param {string} queryField - The query field that the selection must contain for the db search to execute.
@@ -67,7 +70,10 @@ export const findUnique = (
   }
 };
 
-function isSelectionSome(queryField: string, selections: SelectionNode[]) {
+export function isSelectionSome(
+  queryField: string,
+  selections: readonly SelectionNode[]
+) {
   return selections.some(
     (selection) => isFieldNode(selection) && selection.name.value === queryField
   );
@@ -107,4 +113,22 @@ function makeQuery(
     query.include = { [includeProperty]: true };
   }
   return query;
+}
+
+export function findFieldNode(selection: SelectionNode[], nameValue: string) {
+  return selection.find(
+    (selection: SelectionNode): selection is FieldNode =>
+      selection.kind === "Field" && selection.name.value === nameValue
+  );
+}
+
+export function isQueryNested(
+  selection: FieldNode | undefined,
+  queryField: string
+) {
+  return (
+    selection &&
+    selection.selectionSet &&
+    isSelectionSome(queryField, selection.selectionSet.selections)
+  );
 }

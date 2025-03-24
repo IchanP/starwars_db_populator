@@ -1,12 +1,14 @@
 import { GraphQLResolveInfo, SelectionNode } from "graphql";
 import { findManyData, findManyIn, findUnique } from ".";
 import { Context } from "../../context";
+import { Person } from "./peopleResolver";
 
-type Starship = {
+export type Starship = {
   transport_ptr_id: number;
   hyperdrive_rating: string;
   MGLT: string;
   starship_class: string;
+  pilots?: Person[];
 } | null;
 
 interface StarShipRelatedData {
