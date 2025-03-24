@@ -1,19 +1,10 @@
 export const starship = `
 type Starship {
-  id: ID!
-  name: String!
-  model: String!
-  manufacturer: String!
-  costInCredits: String!
-  length: String!
-  maxAtmospheringSpeed: String!
-  crew: String!
-  passengers: String!
-  cargoCapacity: String!
-  consumables: String!
-  hyperdriveRating: String!
+  transport_ptr_id: ID!
+  hyperdrive_rating: String!
   MGLT: String!
-  starshipClass: String!
+  starship_class: String!
+  starwars_transport: Transport!
   pilots: [Person!]!
 }
-`
+`;
