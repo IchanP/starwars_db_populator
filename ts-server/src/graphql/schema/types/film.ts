@@ -1,6 +1,6 @@
 export const film = `
 type Film {
-    id: ID!
+    id: Int!
     title: String!
     episode_id: Int!
     opening_crawl: String!
