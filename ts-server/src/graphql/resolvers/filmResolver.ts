@@ -1,252 +1,59 @@
-import { FieldNode, GraphQLResolveInfo, SelectionNode } from "graphql";
-import { Context } from "../../context";
-import {
-  findFieldNode,
-  findManyData,
-  findManyIn,
-  findUnique,
-  isQueryNested,
-  isSelectionSome,
-} from ".";
-import { planet } from "../schema/types/planet";
-import { Starship } from "./starshipResolver";
+import { MercuriusContext } from "mercurius";
+import { withContext } from ".";
+import { StarWarsFilm } from "./Film";
 
-type Film = {
-  id: number;
-  created: Date;
-  edited: Date;
-  title: string;
-  episode_id: number;
-  opening_crawl: string;
-  director: string;
-  producer: string;
-  release_date: Date;
-} | null;
-
-interface FilmRelatedData {
-  starwars_film_characters?: any[];
-  starwars_film_planets?: any[];
-  starwars_film_starships?: Starship[];
-  starwars_film_vehicles?: any[];
-  starwars_film_species?: any[];
-}
-
-export const filmResolver = async (
-  info: GraphQLResolveInfo,
-  context: Context,
-  film: Film
-) => {
-  const relatedData: FilmRelatedData = {};
-
-  // Make sure that field nodes exist for intellisense.
-  if (info.fieldNodes) {
-    const selections = info.fieldNodes[0].selectionSet
-      ?.selections as SelectionNode[];
-
-    // Find characters
-    const filmCharacters = (await findManyData(
-      selections,
-      "characters",
-      context.prisma.starwars_film_characters,
-      film?.id,
-      "film_id"
-    )) as { people_id: number }[];
-
-    if (filmCharacters) {
-      relatedData.starwars_film_characters = await findManyIn(
-        context.prisma.starwars_people,
-        filmCharacters,
-        "people_id",
-        "id"
+export const Film = {
+  characters: (film: StarWarsFilm, _args: any, cxt: MercuriusContext) =>
+    withContext(cxt, async (context) => {
+      const peopleIds = film.starwars_film_characters.map(
+        (character: { people_id: number }) => character.people_id
       );
-      // Find nested homeworld field on character
-      const characterSelection = findFieldNode(selections, "characters");
-      if (isQueryNested(characterSelection, "homeworld")) {
-        await findCharacterHomeworld(relatedData, context);
-      }
-      // Find nested species field on character
-      if (isQueryNested(characterSelection, "species")) {
-        await findCharacterSpecies(relatedData, context);
-      }
-    }
+      return context.prisma.starwars_people.findMany({
+        where: {
+          id: { in: peopleIds },
+        },
+      });
+    }),
 
-    //  Find planets
-    const filmPlanets = (await findManyData(
-      selections,
-      "planets",
-      context.prisma.starwars_film_planets,
-      film?.id,
-      "film_id"
-    )) as { planet_id: number }[];
-
-    if (filmPlanets) {
-      relatedData.starwars_film_planets = await findManyIn(
-        context.prisma.starwars_planet,
-        filmPlanets,
-        "planet_id",
-        "id"
+  planets: (film: StarWarsFilm, _args: any, cxt: MercuriusContext) =>
+    withContext(cxt, async (context) => {
+      const planetIds = film.starwars_film_planets.map(
+        (planet) => planet.planet_id
       );
-    }
+      return context.prisma.starwars_planet.findMany({
+        where: {
+          id: { in: planetIds },
+        },
+      });
+    }),
 
-    // Find starships
-    const filmStarships = await findManyData(
-      selections,
-      "starships",
-      context.prisma.starwars_film_starships,
-      film?.id,
-      "film_id"
-    );
-
-    if (filmStarships) {
-      relatedData.starwars_film_starships = await findManyIn(
-        context.prisma.starwars_starship,
-        filmStarships,
-        "starship_id",
-        "transport_ptr_id"
+  species: (film: StarWarsFilm, _args: any, cxt: MercuriusContext) =>
+    withContext(cxt, async (context) => {
+      const speciesIds = film.starwars_film_species.map(
+        (species) => species.species_id
       );
+      return context.prisma.starwars_species.findMany({
+        where: { id: { in: speciesIds } },
+      });
+    }),
 
-      const starshipSelection = findFieldNode(selections, "starships");
-
-      if (isQueryNested(starshipSelection, "pilots")) {
-        await findStarshipPilots(relatedData, selections, context);
-      }
-    }
-
-    // Find vehicles
-    const filmVehicles = await findManyData(
-      selections,
-      "vehicles",
-      context.prisma.starwars_film_vehicles,
-      film?.id,
-      "film_id"
-    );
-
-    if (filmVehicles) {
-      relatedData.starwars_film_vehicles = await findManyIn(
-        context.prisma.starwars_vehicle,
-        filmVehicles,
-        "vehicle_id",
-        "transport_ptr_id"
+  starships: (film: StarWarsFilm, _args: any, cxt: MercuriusContext) =>
+    withContext(cxt, async (context) => {
+      const starshipIds = film.starwars_film_starships.map(
+        (starship) => starship.starship_id
       );
-    }
+      return context.prisma.starwars_starship.findMany({
+        where: { transport_ptr_id: { in: starshipIds } },
+      });
+    }),
 
-    // Find species
-    const filmSpecies = await findManyData(
-      selections,
-      "species",
-      context.prisma.starwars_film_species,
-      film?.id,
-      "film_id",
-      "starwars_species"
-    );
-
-    if (filmSpecies) {
-      relatedData.starwars_film_species = await findManyIn(
-        context.prisma.starwars_species,
-        filmSpecies,
-        "species_id",
-        "id"
+  vehicles: (film: StarWarsFilm, _args: any, cxt: MercuriusContext) =>
+    withContext(cxt, async (context) => {
+      const vehicleIds = film.starwars_film_vehicles.map(
+        (vehicle) => vehicle.vehicle_id
       );
-
-      const speciesSelection = findFieldNode(selections, "species");
-      if (isQueryNested(speciesSelection, "homeworld")) {
-        await findSpeciesHomeworld(relatedData, context);
-      }
-    }
-
-    return {
-      ...film,
-      characters: relatedData.starwars_film_characters,
-      planets: relatedData.starwars_film_planets,
-      starships: relatedData.starwars_film_starships,
-      vehicles: relatedData.starwars_film_vehicles,
-      species: relatedData.starwars_film_species,
-    };
-  }
+      return context.prisma.starwars_vehicle.findMany({
+        where: { transport_ptr_id: { in: vehicleIds } },
+      });
+    }),
 };
-
-async function findStarshipPilots(
-  relatedData: FilmRelatedData,
-  selections: SelectionNode[],
-  context: Context
-) {
-  if (!relatedData.starwars_film_starships) return;
-
-  for (const starship of relatedData.starwars_film_starships) {
-    if (!starship) continue;
-
-    const pilotIds = await findManyData(
-      selections,
-      "starships",
-      context.prisma.starwars_starship_pilots,
-      starship?.transport_ptr_id,
-      "starship_id"
-    );
-    starship.pilots = [];
-    for (const obj of pilotIds) {
-      starship.pilots?.push(
-        await findUnique(
-          selections,
-          "starships",
-          context.prisma.starwars_people,
-          obj.people_id,
-          "id"
-        )
-      );
-    }
-  }
-}
-
-async function findCharacterHomeworld(
-  relatedData: FilmRelatedData,
-  context: Context
-) {
-  if (relatedData.starwars_film_characters) {
-    for (const character of relatedData.starwars_film_characters) {
-      character.homeworld = await context.prisma.starwars_planet.findUnique({
-        where: { id: character.homeworld_id },
-      });
-    }
-  }
-}
-
-async function findSpeciesHomeworld(
-  relatedData: FilmRelatedData,
-  context: Context
-) {
-  if (relatedData.starwars_film_species) {
-    for (const specie of relatedData.starwars_film_species) {
-      if (!specie.homeworld_id) continue;
-      specie.homeworld = await context.prisma.starwars_planet.findUnique({
-        where: { id: specie?.homeworld_id },
-      });
-    }
-  }
-}
-
-async function findCharacterSpecies(
-  relatedData: FilmRelatedData,
-  context: Context
-) {
-  if (relatedData.starwars_film_characters) {
-    for (const character of relatedData.starwars_film_characters) {
-      // Rather abstract this away into index but keeping it
-      //  here for now since there's no point generalizing yet
-      const speciesRecord =
-        await context.prisma.starwars_species_people.findFirst({
-          where: {
-            people_id: Number(character?.id),
-          },
-          select: {
-            species_id: true,
-          },
-        });
-
-      if (!speciesRecord?.species_id) continue;
-
-      character.species = await context.prisma.starwars_species.findUnique({
-        where: { id: speciesRecord?.species_id },
-      });
-    }
-  }
-}

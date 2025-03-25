@@ -1,74 +1,28 @@
-import { GraphQLResolveInfo, SelectionNode } from "graphql";
-import { Context } from "../../context";
-import { findManyData, findManyIn, findUnique } from ".";
+import { MercuriusContext } from "mercurius";
+import { withContext } from ".";
+import { Character } from "./Person";
 
-export type Person = {
-  id: number;
-  name: string;
-  created: Date;
-  edited: Date;
-  height: string;
-  mass: string;
-  hair_color: string;
-  skin_color: string;
-  eye_color: string;
-  birth_year: string;
-  gender: string;
-  homeworld_id: number;
-} | null;
+export const Person = {
+  homeworld: (person: Character, _args: unknown, cxt: MercuriusContext) =>
+    withContext(cxt, async (context) =>
+      context.prisma.starwars_planet.findUnique({
+        where: { id: person.homeworld_id },
+      })
+    ),
 
-interface PersonRelatedData {
-  species?: any[];
-  homeworld?: any;
-}
-
-export interface SpeciesPeople {
-  id: bigint;
-  species_id: number;
-  people_id: number;
-}
-
-export const personResolver = async (
-  info: GraphQLResolveInfo,
-  context: Context,
-  person: Person
-) => {
-  const relatedData: PersonRelatedData = {};
-
-  // Make sure that field nodes exist for intellisense.
-  if (info.fieldNodes) {
-    const selections = info.fieldNodes[0].selectionSet
-      ?.selections as SelectionNode[];
-
-    const speciesPeople = (await findManyData(
-      selections,
-      "species",
-      context.prisma.starwars_species_people,
-      person?.id,
-      "people_id"
-    )) as SpeciesPeople[];
-
-    // Don't really like having this here but whatever for now
-    if (speciesPeople) {
-      relatedData.species = await findManyIn(
-        context.prisma.starwars_species,
-        speciesPeople,
-        "species_id",
-        "id"
-      );
-    }
-
-    relatedData.homeworld = await findUnique(
-      selections,
-      "homeworld",
-      context.prisma.starwars_planet,
-      person?.homeworld_id,
-      "id"
-    );
-
-    return {
-      ...person,
-      ...relatedData,
-    };
-  }
+  species: (person: Character, _args: unknown, cxt: MercuriusContext) =>
+    withContext(cxt, async (context) => {
+      const speciesPeople =
+        await context.prisma.starwars_species_people.findMany({
+          where: { people_id: person.id },
+          include: {
+            starwars_species: true,
+          },
+        });
+      return speciesPeople.map((species: SpeciesPerson) => species.starwars_species);
+    }),
 };
+
+interface SpeciesPerson {
+  starwars_species: unknown;
+}
