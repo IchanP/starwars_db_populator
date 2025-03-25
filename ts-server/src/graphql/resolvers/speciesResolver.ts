@@ -11,4 +11,16 @@ export const Species = {
       })
     );
   },
+
+  people: (species: Specie, _args: unknown, cxt: MercuriusContext) =>
+    withContext(cxt, async (context) => {
+      const speciesPeople =
+        await context.prisma.starwars_species_people.findMany({
+          where: { species_id: species.id },
+          include: {
+            starwars_people: true,
+          },
+        });
+      return speciesPeople.map((people) => people.starwars_people);
+    }),
 };

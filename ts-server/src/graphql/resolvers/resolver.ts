@@ -4,8 +4,6 @@ import { GraphQLResolveInfo } from "graphql";
 import { Person } from "./peopleResolver";
 import { starshipResolver } from "./starshipResolver";
 import { vehicleResolver } from "./vehicleResolver";
-import { film } from "../schema/types/film";
-import { planet } from "../schema/types/planet";
 import { Film } from "./filmResolver";
 import { Species } from "./speciesResolver";
 
@@ -60,28 +58,22 @@ export const resolvers: IResolvers = {
         })
       ),
 
-    // species: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
-    //   withContext(cxt, async (context) => {
-    //     const tempSpecies = await context.prisma.starwars_species.findMany();
-    //     const species = [];
-    //     for (let i = 0; i < tempSpecies.length; i++) {
-    //       species[i] = await speciesResolver(info, context, tempSpecies[i]);
-    //     }
-    //     return species;
-    //   }),
+    species: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
+      withContext(cxt, async (context) =>
+        context.prisma.starwars_species.findMany()
+      ),
 
-    // speciesById: (
-    //   _parent: any,
-    //   args: any,
-    //   cxt: any,
-    //   info: GraphQLResolveInfo
-    // ) =>
-    //   withContext(cxt, async (context) => {
-    //     const tempSpecie = await context.prisma.starwars_species.findUnique({
-    //       where: { id: Number(args.id) },
-    //     });
-    //     return speciesResolver(info, context, tempSpecie);
-    //   }),
+    speciesById: (
+      _parent: any,
+      args: any,
+      cxt: any,
+      info: GraphQLResolveInfo
+    ) =>
+      withContext(cxt, async (context) =>
+        context.prisma.starwars_species.findUnique({
+          where: { id: Number(args.id) },
+        })
+      ),
 
     starships: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
       withContext(cxt, async (context) => {
