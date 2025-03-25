@@ -3,9 +3,9 @@ import { withContext } from ".";
 import { GraphQLResolveInfo } from "graphql";
 import { Person } from "./peopleResolver";
 import { Starship } from "./starshipResolver";
-import { vehicleResolver } from "./vehicleResolver";
 import { Film } from "./filmResolver";
 import { Species } from "./speciesResolver";
+import { Vehicle } from "./vehicleResolver";
 
 export const resolvers: IResolvers = {
   Query: {
@@ -104,24 +104,16 @@ export const resolvers: IResolvers = {
       ),
 
     vehicles: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
-      withContext(cxt, async (context) => {
-        const tempVehicles = await context.prisma.starwars_vehicle.findMany();
-        const vehicles = [];
-        for (let i = 0; i < tempVehicles.length; i++) {
-          vehicles[i] = await vehicleResolver(info, context, tempVehicles[i]);
-        }
-        return vehicles;
-      }),
+      withContext(cxt, async (context) =>
+        context.prisma.starwars_vehicle.findMany()
+      ),
 
     vehicle: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
-      withContext(cxt, async (context) => {
-        const vehicle = await context.prisma.starwars_vehicle.findUnique({
-          where: {
-            transport_ptr_id: Number(args.id),
-          },
-        });
-        return !vehicle ? null : vehicleResolver(info, context, vehicle);
-      }),
+      withContext(cxt, async (context) =>
+        context.prisma.starwars_vehicle.findUnique({
+          where: { transport_ptr_id: Number(args.id) },
+        })
+      ),
   },
 
   Film: Film,
@@ -131,4 +123,6 @@ export const resolvers: IResolvers = {
   Species: Species,
 
   Starship: Starship,
+
+  Vehicle: Vehicle,
 };
