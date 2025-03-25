@@ -15,10 +15,10 @@ export const Person = {
       const speciesPeople =
         await context.prisma.starwars_species_people.findMany({
           where: { people_id: person.id },
+          include: {
+            starwars_species: true,
+          },
         });
-      const speciesIds = speciesPeople.map((ids) => ids.species_id);
-      return context.prisma.starwars_species.findMany({
-        where: { id: { in: speciesIds } },
-      });
+      return speciesPeople.map((species) => species.starwars_species);
     }),
 };
