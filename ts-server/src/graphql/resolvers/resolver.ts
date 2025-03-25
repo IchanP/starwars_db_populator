@@ -1,6 +1,6 @@
-import { IResolvers, MercuriusContext } from "mercurius";
-import { findManyData, withContext } from ".";
-import { GraphQLResolveInfo, SelectionNode } from "graphql";
+import { IResolvers } from "mercurius";
+import { withContext } from ".";
+import { GraphQLResolveInfo } from "graphql";
 import { filmResolver } from "./filmResolver";
 import { personResolver } from "./peopleResolver";
 import { speciesResolver } from "./speciesResolver";

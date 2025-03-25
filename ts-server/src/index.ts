@@ -5,6 +5,7 @@ import { typeDefs } from "./graphql/schema/mergeTypeDef";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { PrismaClient } from "@prisma/client";
 import { resolvers } from "./graphql/resolvers/resolver";
+import { resolvers as cacheResolvers } from "./graphql/resolvers/ex2/cache/resolver";
 import { Context } from "./context";
 
 interface CustomServer extends FastifyInstance {
@@ -38,6 +39,17 @@ server.register(mercurius, {
     };
   },
 });
+
+server.register(mercurius, {
+  schema: schema,
+  resolvers: cacheResolvers,
+  graphiql: true,
+  path: "/ex2/cache",
+  context: (request, reply): Partial<Context> => ({
+    prisma: server.prisma,
+  }),
+});
+
 
 server.listen({ port: 4000 }, (err, address) => {
   if (err) {

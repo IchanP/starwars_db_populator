@@ -20,7 +20,8 @@
     "fastify-cli": "^7.3.0",
     "graphql": "^16.10.0",
     "mercurius": "^16.1.0",
-    "pg": "^8.14.0"
+    "pg": "^8.14.0",
+    "redis": "^4.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
