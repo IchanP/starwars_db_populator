@@ -39,7 +39,7 @@ server.register(mercurius, {
   },
 });
 
-server.listen({ port: 4000 }, (err, address) => {
+server.listen({ port: 4000, host: "0.0.0.0" }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);
