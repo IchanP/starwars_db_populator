@@ -37,7 +37,7 @@ server.register(mercurius, {
   schema,
   resolvers,
   graphiql: true,
-  path: '/ex2/batch',
+  path: '/batch',
   allowBatchedQueries: true,
   context: (request, reply): Partial<Context> => {
     return {
@@ -50,13 +50,38 @@ server.register(mercurius, {
   schema: schema,
   resolvers: cacheResolvers,
   graphiql: true,
-  path: "/ex2/cache",
+  path: "/cache",
   context: (request, reply): Partial<Context> => ({
     prisma: server.prisma,
     redis: server.redis
   }),
 });
 
+
+server.register(mercurius, {
+  schema: schema,
+  resolvers: cacheResolvers,
+  graphiql: true,
+  path: "/batchandcache",
+  allowBatchedQueries: true,
+  context: (request, reply): Partial<Context> => ({
+    prisma: server.prisma,
+    redis: server.redis
+  }),
+});
+
+// All other tests can go through this endpoint.
+server.register(mercurius, {
+  schema,
+  resolvers,
+  graphiql: true,
+  path: '/',
+  context: (request, reply): Partial<Context> => {
+    return {
+      prisma: server.prisma,
+    };
+  },
+});
 
 server.listen({ port: 4000 }, (err, address) => {
   if (err) {
