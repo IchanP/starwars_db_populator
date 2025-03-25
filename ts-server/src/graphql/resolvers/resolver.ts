@@ -38,24 +38,17 @@ export const resolvers: IResolvers = {
         })
       ),
 
-    // people: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
-    //   withContext(cxt, async (context) => {
-    //     const tempPeople = await context.prisma.starwars_people.findMany();
-    //     const people = [];
-    //     for (let i = 0; i < tempPeople.length; i++) {
-    //       people[i] = await personResolver(info, context, tempPeople[i]);
-    //     }
-    //     return people;
-    //   }),
+    people: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
+      withContext(cxt, async (context) =>
+        context.prisma.starwars_people.findMany()
+      ),
 
-    // person: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
-    //   withContext(cxt, async (context) => {
-    //     const person = await context.prisma.starwars_people.findUnique({
-    //       where: { id: Number(args.id) },
-    //     });
-
-    //     return personResolver(info, context, person);
-    //   }),
+    person: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
+      withContext(cxt, async (context) =>
+        context.prisma.starwars_people.findUnique({
+          where: { id: Number(args.id) },
+        })
+      ),
 
     planets: (_parent: any, args: any, cxt: any) =>
       withContext(cxt, (context) => context.prisma.starwars_planet.findMany()),
