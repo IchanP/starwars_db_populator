@@ -2,7 +2,7 @@ import { IResolvers } from "mercurius";
 import { withContext } from ".";
 import { GraphQLResolveInfo } from "graphql";
 import { Person } from "./peopleResolver";
-import { starshipResolver } from "./starshipResolver";
+import { Starship } from "./starshipResolver";
 import { vehicleResolver } from "./vehicleResolver";
 import { Film } from "./filmResolver";
 import { Species } from "./speciesResolver";
@@ -76,36 +76,18 @@ export const resolvers: IResolvers = {
       ),
 
     starships: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
-      withContext(cxt, async (context) => {
-        const tempStarships = await context.prisma.starwars_starship.findMany();
-        const starships = [];
-        for (let i = 0; i < tempStarships.length; i++) {
-          starships[i] = await starshipResolver(
-            info,
-            context,
-            tempStarships[i]
-          );
-        }
-        return starships;
-      }),
+      withContext(cxt, async (context) =>
+        withContext(cxt, async (context) =>
+          context.prisma.starwars_starship.findMany()
+        )
+      ),
 
     starship: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
-      withContext(cxt, async (context) => {
-        try {
-          const tempStarship =
-            await context.prisma.starwars_starship.findUnique({
-              where: {
-                transport_ptr_id: Number(args?.id),
-              },
-            });
-
-          return !tempStarship
-            ? null
-            : starshipResolver(info, context, tempStarship);
-        } catch (e: unknown) {
-          return null;
-        }
-      }),
+      withContext(cxt, async (context) =>
+        context.prisma.starwars_starship.findUnique({
+          where: { transport_ptr_id: Number(args.id) },
+        })
+      ),
 
     transports: (_parent: any, args: any, cxt: any) =>
       withContext(cxt, async (context) =>
@@ -147,4 +129,6 @@ export const resolvers: IResolvers = {
   Person: Person,
 
   Species: Species,
+
+  Starship: Starship,
 };
