@@ -37,6 +37,8 @@ server.register(mercurius, {
   schema,
   resolvers,
   graphiql: true,
+  path: '/ex2/batch',
+  allowBatchedQueries: true,
   context: (request, reply): Partial<Context> => {
     return {
       prisma: server.prisma,
