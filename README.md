@@ -55,3 +55,8 @@ Username: `postgres`
 Password: `example`
 
 Click **"Save"**.
+
+## Redis (for EX2)
+
+Run redis using 
+`docker run --name redis -p 6379:6379 -d redis`
