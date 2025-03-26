@@ -6,7 +6,6 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { PrismaClient } from "@prisma/client";
 import { resolvers } from "./graphql/resolvers/resolver";
 import { resolvers as cacheResolvers } from "./graphql/resolvers/ex2/cache/resolver";
-import { Context } from "./context";
 import redis from "./plugins/redis";
 
 interface CustomServer extends FastifyInstance {
@@ -37,9 +36,9 @@ server.register(mercurius, {
   schema,
   resolvers,
   graphiql: true,
-  path: '/ex2/batch',
+  path: "/ex2/batch",
   allowBatchedQueries: true,
-  context: (request, reply): Partial<Context> => {
+  context: () => {
     return {
       prisma: server.prisma,
     };
@@ -51,12 +50,11 @@ server.register(mercurius, {
   resolvers: cacheResolvers,
   graphiql: true,
   path: "/ex2/cache",
-  context: (request, reply): Partial<Context> => ({
+  context: () => ({
     prisma: server.prisma,
-    redis: server.redis
+    redis: server.redis,
   }),
 });
-
 
 server.listen({ port: 4000 }, (err, address) => {
   if (err) {
