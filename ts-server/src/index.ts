@@ -48,8 +48,6 @@ const schema = makeExecutableSchema({
 //   },
 // });
 
-console.log(process.env.DATABASE_URL);
-
 server.register(mercurius, {
   schema: schema,
   resolvers: cacheResolvers,

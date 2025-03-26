@@ -6,6 +6,7 @@ import { Species } from "../../speciesResolver";
 import { Starship } from "../../starshipResolver";
 import { Vehicle } from "../../vehicleResolver";
 import { transport } from "../../../schema/types/transport";
+import { FastifyRedis } from "@fastify/redis";
 
 // Helper function to cache and retrieve from Redis
 const getFromCache = async (key: string, redis: any): Promise<any> => {
@@ -13,8 +14,8 @@ const getFromCache = async (key: string, redis: any): Promise<any> => {
   return data ? JSON.parse(data) : null;
 };
 
-const setCache = async (key: string, data: any, redis: any) => {
-  redis.setEx(key, 300, JSON.stringify(data)); // 5 minutes
+const setCache = async (key: string, data: any, redis: FastifyRedis) => {
+  redis.setex(key, 300, JSON.stringify(data)); // 5 minutes
 };
 
 export const resolvers: IResolvers = {
@@ -44,6 +45,7 @@ export const resolvers: IResolvers = {
         const cacheKey = `film:${filmId}`;
         let film = await getFromCache(cacheKey, context.redis);
         if (!film) {
+          context.prisma.starwars_people.findMany();
           film = await context.prisma.starwars_film.findUnique({
             where: { id: Number(args.id) },
             include: {
@@ -90,6 +92,7 @@ export const resolvers: IResolvers = {
         let planets = await getFromCache(cacheKey, context.redis);
         if (!planets) {
           planets = await context.prisma.starwars_planet.findMany();
+          console.log(planets);
           await setCache(cacheKey, planets, context.redis);
         }
         return planets;
