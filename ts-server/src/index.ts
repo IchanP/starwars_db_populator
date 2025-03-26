@@ -7,6 +7,9 @@ import { PrismaClient } from "@prisma/client";
 import { resolvers } from "./graphql/resolvers/resolver";
 import { resolvers as cacheResolvers } from "./graphql/resolvers/ex2/cache/resolver";
 import redis from "./plugins/redis";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 interface CustomServer extends FastifyInstance {
   prisma: PrismaClient;
@@ -32,18 +35,20 @@ const schema = makeExecutableSchema({
   typeDefs,
 });
 
-server.register(mercurius, {
-  schema,
-  resolvers,
-  graphiql: true,
-  path: "/ex2/batch",
-  allowBatchedQueries: true,
-  context: () => {
-    return {
-      prisma: server.prisma,
-    };
-  },
-});
+// server.register(mercurius, {
+//   schema,
+//   resolvers,
+//   graphiql: true,
+//   path: "/ex2/batch",
+//   allowBatchedQueries: true,
+//   context: () => {
+//     return {
+//       prisma: server.prisma,
+//     };
+//   },
+// });
+
+console.log(process.env.DATABASE_URL);
 
 server.register(mercurius, {
   schema: schema,
