@@ -1,6 +1,5 @@
 import { IResolvers } from "mercurius";
 import { withContext } from ".";
-import { GraphQLResolveInfo } from "graphql";
 import { Person } from "./peopleResolver";
 import { Starship } from "./starshipResolver";
 import { Film } from "./filmResolver";
@@ -36,12 +35,12 @@ export const resolvers: IResolvers = {
         })
       ),
 
-    people: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
+    people: (_parent: any, args: any, cxt: any) =>
       withContext(cxt, async (context) =>
         context.prisma.starwars_people.findMany()
       ),
 
-    person: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
+    person: (_parent: any, args: any, cxt: any) =>
       withContext(cxt, async (context) =>
         context.prisma.starwars_people.findUnique({
           where: { id: Number(args.id) },
@@ -58,31 +57,27 @@ export const resolvers: IResolvers = {
         })
       ),
 
-    species: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
+    species: (_parent: any, args: any, cxt: any) =>
       withContext(cxt, async (context) =>
         context.prisma.starwars_species.findMany()
       ),
 
-    speciesById: (
-      _parent: any,
-      args: any,
-      cxt: any,
-      info: GraphQLResolveInfo
-    ) =>
+    speciesById: (_parent: any, args: any, cxt: any) =>
       withContext(cxt, async (context) =>
         context.prisma.starwars_species.findUnique({
           where: { id: Number(args.id) },
         })
       ),
 
-    starships: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
+    starships: (_parent: any, args: any, cxt: any) =>
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       withContext(cxt, async (context) =>
         withContext(cxt, async (context) =>
           context.prisma.starwars_starship.findMany()
         )
       ),
 
-    starship: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
+    starship: (_parent: any, args: any, cxt: any) =>
       withContext(cxt, async (context) =>
         context.prisma.starwars_starship.findUnique({
           where: { transport_ptr_id: Number(args.id) },
@@ -103,12 +98,12 @@ export const resolvers: IResolvers = {
         })
       ),
 
-    vehicles: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
+    vehicles: (_parent: any, args: any, cxt: any) =>
       withContext(cxt, async (context) =>
         context.prisma.starwars_vehicle.findMany()
       ),
 
-    vehicle: (_parent: any, args: any, cxt: any, info: GraphQLResolveInfo) =>
+    vehicle: (_parent: any, args: any, cxt: any) =>
       withContext(cxt, async (context) =>
         context.prisma.starwars_vehicle.findUnique({
           where: { transport_ptr_id: Number(args.id) },
