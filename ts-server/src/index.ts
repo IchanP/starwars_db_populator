@@ -35,29 +35,29 @@ const schema = makeExecutableSchema({
   typeDefs,
 });
 
-server.register(mercurius, {
-  schema,
-  resolvers,
-  graphiql: true,
-  path: "/ex2/batch",
-  allowBatchedQueries: true,
-  context: () => {
-    return {
-      prisma: server.prisma,
-    };
-  },
-});
-
 // server.register(mercurius, {
-//   schema: schema,
-//   resolvers: cacheResolvers,
+//   schema,
+//   resolvers,
 //   graphiql: true,
-//   path: "/ex2/cache",
-//   context: () => ({
-//     prisma: server.prisma,
-//     redis: server.redis,
-//   }),
+//   path: "/ex2/batch",
+//   allowBatchedQueries: true,
+//   context: () => {
+//     return {
+//       prisma: server.prisma,
+//     };
+//   },
 // });
+
+server.register(mercurius, {
+  schema: schema,
+  resolvers: cacheResolvers,
+  graphiql: true,
+  path: "/ex2/cache",
+  context: () => ({
+    prisma: server.prisma,
+    redis: server.redis,
+  }),
+});
 
 server.listen({ port: 4000 }, (err, address) => {
   if (err) {

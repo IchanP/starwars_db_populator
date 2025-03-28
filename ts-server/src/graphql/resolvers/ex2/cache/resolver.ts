@@ -14,7 +14,6 @@ export const resolvers: IResolvers = {
         const cacheKey = `films`;
         let films = await getFromCache(cacheKey, context.redis);
         if (!films) {
-          // TODO doesn't work with bigInt...
           films = await context.prisma.starwars_film.findMany({
             include: {
               starwars_film_characters: true,

@@ -29,7 +29,6 @@ export const Film = {
     withContext(cxt, async (context) => {
       const cacheKey = `filmPlanets:${film.id}`;
       let planets = await getFromCache(cacheKey, context.redis);
-
       if (!planets) {
         const planetIds = film.starwars_film_planets.map(
           (planet) => planet.planet_id
