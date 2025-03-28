@@ -34,9 +34,6 @@ server.register(redis);
 const schema = makeExecutableSchema({
   typeDefs,
 });
-const schemaTwo = makeExecutableSchema({
-  typeDefs,
-});
 
 server.register(mercurius, {
   schema,
@@ -51,16 +48,16 @@ server.register(mercurius, {
   },
 });
 
-server.register(mercurius, {
-  schema: schemaTwo,
-  resolvers: cacheResolvers,
-  graphiql: true,
-  path: "/ex2/cache",
-  context: () => ({
-    prisma: server.prisma,
-    redis: server.redis,
-  }),
-});
+// server.register(mercurius, {
+//   schema: schema,
+//   resolvers: cacheResolvers,
+//   graphiql: true,
+//   path: "/ex2/cache",
+//   context: () => ({
+//     prisma: server.prisma,
+//     redis: server.redis,
+//   }),
+// });
 
 server.listen({ port: 4000 }, (err, address) => {
   if (err) {
