@@ -20,9 +20,9 @@ model starwars_editablemodel {
 }
 
 model starwars_film {
-  id                       Int                        @id @default(autoincrement())
   created                  DateTime                   @db.Timestamptz(6)
   edited                   DateTime                   @db.Timestamptz(6)
+  id                       Int                        @id @default(autoincrement())
   title                    String                     @db.VarChar(100)
   episode_id               Int
   opening_crawl            String
@@ -38,74 +38,69 @@ model starwars_film {
 
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model starwars_film_characters {
-  id              BigInt          @id @default(autoincrement())
+  id              Int             @id @default(autoincrement())
   film_id         Int
   people_id       Int
-  starwars_film   starwars_film   @relation(fields: [film_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_film_characters_film_id_96746e18_fk_starwars_film_id")
   starwars_people starwars_people @relation(fields: [people_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_film_charac_people_id_d26dd46a_fk_starwars_")
+  starwars_film   starwars_film   @relation(fields: [film_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_film_characters_film_id_96746e18_fk_starwars_film_id")
 
-  @@unique([film_id, people_id], map: "starwars_film_characters_film_id_people_id_1fe8c42b_uniq")
   @@index([film_id], map: "starwars_film_characters_film_id_96746e18")
   @@index([people_id], map: "starwars_film_characters_people_id_d26dd46a")
 }
 
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model starwars_film_planets {
-  id              BigInt          @id @default(autoincrement())
+  id              Int             @id @default(autoincrement())
   film_id         Int
   planet_id       Int
   starwars_film   starwars_film   @relation(fields: [film_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_film_planets_film_id_6c349870_fk_starwars_film_id")
   starwars_planet starwars_planet @relation(fields: [planet_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_film_planets_planet_id_a2334f62_fk_starwars_planet_id")
 
-  @@unique([film_id, planet_id], map: "starwars_film_planets_film_id_planet_id_3d05c87d_uniq")
   @@index([film_id], map: "starwars_film_planets_film_id_6c349870")
   @@index([planet_id], map: "starwars_film_planets_planet_id_a2334f62")
 }
 
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model starwars_film_species {
-  id               BigInt           @id @default(autoincrement())
+  id               Int              @id @default(autoincrement())
   film_id          Int
   species_id       Int
-  starwars_film    starwars_film    @relation(fields: [film_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_film_species_film_id_19055fd6_fk_starwars_film_id")
   starwars_species starwars_species @relation(fields: [species_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_film_specie_species_id_e7a51b1b_fk_starwars_")
+  starwars_film    starwars_film    @relation(fields: [film_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_film_species_film_id_19055fd6_fk_starwars_film_id")
 
-  @@unique([film_id, species_id], map: "starwars_film_species_film_id_species_id_3f99bedc_uniq")
   @@index([film_id], map: "starwars_film_species_film_id_19055fd6")
   @@index([species_id], map: "starwars_film_species_species_id_e7a51b1b")
 }
 
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model starwars_film_starships {
-  id                BigInt            @id @default(autoincrement())
+  id                Int               @id @default(autoincrement())
   film_id           Int
   starship_id       Int
-  starwars_film     starwars_film     @relation(fields: [film_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_film_starships_film_id_31f0078f_fk_starwars_film_id")
   starwars_starship starwars_starship @relation(fields: [starship_id], references: [transport_ptr_id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_film_starsh_starship_id_eb5d015a_fk_starwars_")
+  starwars_film     starwars_film     @relation(fields: [film_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_film_starships_film_id_31f0078f_fk_starwars_film_id")
 
-  @@unique([film_id, starship_id], map: "starwars_film_starships_film_id_starship_id_2b3c6b72_uniq")
   @@index([film_id], map: "starwars_film_starships_film_id_31f0078f")
   @@index([starship_id], map: "starwars_film_starships_starship_id_eb5d015a")
 }
 
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model starwars_film_vehicles {
-  id               BigInt           @id @default(autoincrement())
+  id               Int              @id @default(autoincrement())
   film_id          Int
   vehicle_id       Int
-  starwars_film    starwars_film    @relation(fields: [film_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_film_vehicles_film_id_3f2b450b_fk_starwars_film_id")
   starwars_vehicle starwars_vehicle @relation(fields: [vehicle_id], references: [transport_ptr_id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_film_vehicl_vehicle_id_21cd6dfd_fk_starwars_")
+  starwars_film    starwars_film    @relation(fields: [film_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_film_vehicles_film_id_3f2b450b_fk_starwars_film_id")
 
-  @@unique([film_id, vehicle_id], map: "starwars_film_vehicles_film_id_vehicle_id_5b25f009_uniq")
   @@index([film_id], map: "starwars_film_vehicles_film_id_3f2b450b")
   @@index([vehicle_id], map: "starwars_film_vehicles_vehicle_id_21cd6dfd")
 }
 
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model starwars_people {
-  id                       Int                        @id @default(autoincrement())
   created                  DateTime                   @db.Timestamptz(6)
   edited                   DateTime                   @db.Timestamptz(6)
+  id                       Int                        @id @default(autoincrement())
   name                     String                     @db.VarChar(100)
   height                   String                     @db.VarChar(10)
   mass                     String                     @db.VarChar(10)
@@ -125,9 +120,9 @@ model starwars_people {
 }
 
 model starwars_planet {
-  id                    Int                     @id @default(autoincrement())
   created               DateTime                @db.Timestamptz(6)
   edited                DateTime                @db.Timestamptz(6)
+  id                    Int                     @id @default(autoincrement())
   name                  String                  @db.VarChar(100)
   rotation_period       String                  @db.VarChar(40)
   orbital_period        String                  @db.VarChar(40)
@@ -144,9 +139,9 @@ model starwars_planet {
 
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model starwars_species {
-  id                      Int                       @id @default(autoincrement())
   created                 DateTime                  @db.Timestamptz(6)
   edited                  DateTime                  @db.Timestamptz(6)
+  id                      Int                       @id @default(autoincrement())
   name                    String                    @db.VarChar(40)
   classification          String                    @db.VarChar(40)
   designation             String                    @db.VarChar(40)
@@ -161,18 +156,17 @@ model starwars_species {
   starwars_planet         starwars_planet?          @relation(fields: [homeworld_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_species_homeworld_id_6f46acd2_fk_starwars_planet_id")
   starwars_species_people starwars_species_people[]
 
-  @@index([homeworld_id], map: "starwars_species_omeworld_id_439c005c")
+  @@index([homeworld_id], map: "starwars_species_homeworld_id_6f46acd2")
 }
 
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model starwars_species_people {
-  id               BigInt           @id @default(autoincrement())
-  species_id       Int
+  id               Int              @id @default(autoincrement())
   people_id        Int
+  species_id       Int
   starwars_people  starwars_people  @relation(fields: [people_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_species_peo_people_id_51cc701f_fk_starwars_")
   starwars_species starwars_species @relation(fields: [species_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_species_peo_species_id_1be65999_fk_starwars_")
 
-  @@unique([species_id, people_id], map: "starwars_species_people_species_id_people_id_89b8d52c_uniq")
   @@index([people_id], map: "starwars_species_people_people_id_51cc701f")
   @@index([species_id], map: "starwars_species_people_species_id_1be65999")
 }
@@ -190,21 +184,20 @@ model starwars_starship {
 
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model starwars_starship_pilots {
-  id                BigInt            @id @default(autoincrement())
-  starship_id       Int
+  id                Int               @id @default(autoincrement())
   people_id         Int
+  starship_id       Int
   starwars_people   starwars_people   @relation(fields: [people_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_starship_pi_people_id_8bbaf24a_fk_starwars_")
   starwars_starship starwars_starship @relation(fields: [starship_id], references: [transport_ptr_id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_starship_pi_starship_id_8665f2ef_fk_starwars_")
 
-  @@unique([starship_id, people_id], map: "starwars_starship_pilots_starship_id_people_id_cd2ce733_uniq")
   @@index([people_id], map: "starwars_starship_pilots_people_id_8bbaf24a")
   @@index([starship_id], map: "starwars_starship_pilots_starship_id_8665f2ef")
 }
 
 model starwars_transport {
-  id                     Int                @id @default(autoincrement())
   created                DateTime           @db.Timestamptz(6)
   edited                 DateTime           @db.Timestamptz(6)
+  id                     Int                @id @default(autoincrement())
   name                   String             @db.VarChar(40)
   model                  String             @db.VarChar(40)
   manufacturer           String             @db.VarChar(80)
@@ -230,13 +223,12 @@ model starwars_vehicle {
 
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model starwars_vehicle_pilots {
-  id               BigInt           @id @default(autoincrement())
-  vehicle_id       Int
+  id               Int              @id @default(autoincrement())
   people_id        Int
+  vehicle_id       Int
   starwars_people  starwars_people  @relation(fields: [people_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_vehicle_pil_people_id_8514156b_fk_starwars_")
   starwars_vehicle starwars_vehicle @relation(fields: [vehicle_id], references: [transport_ptr_id], onDelete: NoAction, onUpdate: NoAction, map: "starwars_vehicle_pil_vehicle_id_2436f0c3_fk_starwars_")
 
-  @@unique([vehicle_id, people_id], map: "starwars_vehicle_pilots_vehicle_id_people_id_32cbd01e_uniq")
   @@index([people_id], map: "starwars_vehicle_pilots_people_id_8514156b")
   @@index([vehicle_id], map: "starwars_vehicle_pilots_vehicle_id_2436f0c3")
 }
