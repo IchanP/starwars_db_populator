@@ -19,7 +19,10 @@ export const Person = {
             starwars_species: true,
           },
         });
-      return speciesPeople.map((species: SpeciesPerson) => species.starwars_species);
+
+      return speciesPeople.map(
+        (species: SpeciesPerson) => species.starwars_species
+      );
     }),
 };
 
