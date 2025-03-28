@@ -1,11 +1,10 @@
 import { IResolvers } from "mercurius";
 import { withContext } from "../../";
-import { Film } from "../../filmResolver";
-import { Person } from "../../peopleResolver";
-import { Species } from "../../speciesResolver";
-import { Starship } from "../../starshipResolver";
-import { Vehicle } from "../../vehicleResolver";
-import { transport } from "../../../schema/types/transport";
+import { Film } from "./filmResolver";
+import { Person } from "./peopleResolver";
+import { Species } from "./speciesResolver";
+import { Starship } from "./starshipResolver";
+import { Vehicle } from "./vehicleResolver";
 import { FastifyRedis } from "@fastify/redis";
 
 // Helper function to cache and retrieve from Redis
@@ -25,6 +24,7 @@ export const resolvers: IResolvers = {
         const cacheKey = `films`;
         let films = await getFromCache(cacheKey, context.redis);
         if (!films) {
+          // TODO doesn't work with bigInt...
           films = await context.prisma.starwars_film.findMany({
             include: {
               starwars_film_characters: true,
@@ -168,7 +168,7 @@ export const resolvers: IResolvers = {
         let transports = await getFromCache(cachekey, context.redis);
         if (!transports) {
           transports = await context.prisma.starwars_transport.findMany();
-          await setCache(cachekey, transport, context.redis);
+          await setCache(cachekey, transports, context.redis);
         }
         return transports;
       }),
