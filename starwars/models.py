@@ -76,7 +76,7 @@ class People(DateTimeModel):
     birth_year = models.CharField(max_length=10, blank=True)
 
     gender = models.CharField(max_length=40, blank=True)
-    # TODO - Requires on_delete argument???
+
     homeworld = models.ForeignKey(Planet, related_name="residents", on_delete=models.DO_NOTHING)
 
 
@@ -120,8 +120,17 @@ class Starship(Transport):
     pilots = models.ManyToManyField(
         People,
         related_name="starships",
-        blank=True
+        blank=True,
+        through="StarshipPilot"
     )
+
+class StarshipPilot(models.Model):
+    starship = models.ForeignKey(Starship, on_delete=models.CASCADE)
+    people = models.ForeignKey(People, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True)
+
+    class Meta:
+        db_table = 'starwars_starship_pilots'
 
 
 class Vehicle(Transport):
@@ -132,9 +141,17 @@ class Vehicle(Transport):
     pilots = models.ManyToManyField(
         People,
         related_name="vehicles",
-        blank=True
+        blank=True,
+        through="VehiclePilots"
     )
 
+class VehiclePilots(models.Model):
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
+    people = models.ForeignKey(People, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True)
+
+    class Meta:
+        db_table = 'starwars_vehicle_pilots'
 
 class Species(DateTimeModel):
     "A species is a type of alien or person"
@@ -164,8 +181,20 @@ class Species(DateTimeModel):
 
     language = models.CharField(max_length=40)
 
-    people = models.ManyToManyField(People, related_name="species")
+    people = models.ManyToManyField(
+        People, 
+        related_name="species", 
+        blank=True, 
+        through='SpeciesPeople'
+    )
 
+class SpeciesPeople(models.Model):
+    species = models.ForeignKey(Species, on_delete=models.CASCADE)
+    people = models.ForeignKey(People, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True)
+
+    class Meta:
+        db_table = 'starwars_species_people'
 
 class Film(DateTimeModel):
     """ A film i.e. The Empire Strikes Back (which is also the best film) """
@@ -174,45 +203,84 @@ class Film(DateTimeModel):
         return self.title
 
     id = models.AutoField(primary_key=True)
-
     title = models.CharField(max_length=100)
-
     episode_id = models.IntegerField()
-
     opening_crawl = models.TextField(max_length=1000)
-
     director = models.CharField(max_length=100)
-
     producer = models.CharField(max_length=100)
-
     release_date = models.DateField()
 
     characters = models.ManyToManyField(
         People,
         related_name="films",
-        blank=True
+        blank=True,
+        through='FilmCharacter'
     )
 
     planets = models.ManyToManyField(
         Planet,
         related_name="films",
-        blank=True
+        blank=True,
+        through='FilmPlanet'
     )
 
     starships = models.ManyToManyField(
         Starship,
         related_name="films",
-        blank=True
+        blank=True,
+        through='FilmStarship'
     )
 
     vehicles = models.ManyToManyField(
         Vehicle,
         related_name="films",
-        blank=True
+        blank=True,
+        through='FilmVehicle'
     )
 
     species = models.ManyToManyField(
         Species,
         related_name="films",
-        blank=True
+        blank=True,
+        through='FilmSpecies'
     )
+
+class FilmCharacter(models.Model):
+    film = models.ForeignKey(Film, on_delete=models.CASCADE)
+    people = models.ForeignKey(People, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True)
+
+    class Meta:
+        db_table = 'starwars_film_characters'
+
+class FilmPlanet(models.Model):
+    film = models.ForeignKey(Film, on_delete=models.CASCADE)
+    planet = models.ForeignKey(Planet, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True) 
+
+    class Meta:
+        db_table = 'starwars_film_planets'
+
+class FilmStarship(models.Model):
+    film = models.ForeignKey(Film, on_delete=models.CASCADE)
+    starship = models.ForeignKey(Starship, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True)
+
+    class Meta:
+        db_table = "starwars_film_starships"
+
+class FilmVehicle(models.Model):
+    film = models.ForeignKey(Film, on_delete=models.CASCADE)
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True)
+
+    class Meta:
+        db_table = "starwars_film_vehicles"
+
+class FilmSpecies(models.Model):
+    film = models.ForeignKey(Film, on_delete=models.CASCADE)
+    species = models.ForeignKey(Species, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True)
+
+    class Meta:
+        db_table = "starwars_film_species"

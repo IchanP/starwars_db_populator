@@ -40,10 +40,13 @@ server.register(mercurius, {
   resolvers,
   graphiql: true,
   path: "/graphql",
+  // NOTE comment out when needed
   allowBatchedQueries: true,
   context: () => {
     return {
       prisma: server.prisma,
+      // NOTE comment out when needed
+      redis: server.redis,
     };
   },
 });
