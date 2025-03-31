@@ -51,6 +51,18 @@ server.register(mercurius, {
   },
 });
 
+// server.register(mercurius, {
+//   schema: schema,
+//   resolvers: cacheResolvers, // RUN CACHE RESOLVERS WHEN DOING CACHE EXPERIMENTS
+//   allowBatchedQueries: true, // ALLOW BATCHED QUERIES WHEN DOING BATCH EXPERIMENTS
+//   graphiql: true,
+//   path: "/graphql",
+//   context: () => ({
+//     prisma: server.prisma,
+//     redis: server.redis, // PROVIDE REDIS IN MERCURIUS CONTEXT WHEN RUNNING CACHE EXPERIMENTS
+//   }),
+// });
+
 server.listen({ port: 4000 }, (err, address) => {
   if (err) {
     console.error(err);
