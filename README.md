@@ -60,3 +60,8 @@ Click **"Save"**.
 
 Run redis using 
 `docker run --name redis -p 6379:6379 -d redis`
+
+## Run using docker compose
+
+change to ts-server directory
+run `docker-compose up -d`
