@@ -9,6 +9,7 @@ services:
       - "6379:6379"
     networks:
       - app_network
+    cgroup_parent: power.slice
 
   server_app:
     build: .
@@ -38,6 +39,7 @@ services:
       - 5432:5432
     networks:
       - app_network
+    cgroup_parent: power.slice
       
 volumes:
   redis_data:
