@@ -1,0 +1,50 @@
+services:
+
+  redis:
+    image: redis:latest
+    restart: always
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+    cgroup_parent: power.slice
+
+  server_app:
+    build: .
+    restart: always
+    depends_on:
+      - redis
+      - postgres_db
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env
+    networks:
+      - app_network
+    cgroup_parent: power.slice
+
+  postgres_db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Doesn't matter since we're running locally
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: sw_db
+    ports:
+      - 5432:5432
+    networks:
+      - app_network
+    cgroup_parent: power.slice
+      
+volumes:
+  redis_data:
+  postgres_data:
+
+networks:
+  app_network:
+    driver: bridge
