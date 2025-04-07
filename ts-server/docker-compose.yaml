@@ -40,6 +40,14 @@ services:
     networks:
       - app_network
     cgroup_parent: power.slice
+  
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8085:8080
+    networks:
+      - app_network
       
 volumes:
   redis_data:
