@@ -1,0 +1,3 @@
+Label,# Samples,Average,Min,Max,Std. Dev.,Error %,Throughput,Received KB/sec,Sent KB/sec,Avg. Bytes
+Big Query,4371,4262,39,4941,556.64,4.576%,46.36288,416.84,15.08,9206.5
+TOTAL,4371,4262,39,4941,556.64,4.576%,46.36288,416.84,15.08,9206.5
