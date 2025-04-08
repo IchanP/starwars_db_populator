@@ -41,7 +41,7 @@ server.register(mercurius, {
   graphiql: true,
   path: "/graphql",
   // NOTE comment out when needed
-  allowBatchedQueries: true,
+  // allowBatchedQueries: true,
   context: () => {
     return {
       prisma: server.prisma,
@@ -63,7 +63,7 @@ server.register(mercurius, {
 //   }),
 // });
 
-server.listen({ host: '0.0.0.0', port: 4000 }, (err, address) => {
+server.listen({ host: "0.0.0.0", port: 4000 }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);
