@@ -65,7 +65,7 @@ plot_group_files(postgres_file_paths, 2, 2, y_range=[0, 10])
 
 # Final layout
 fig.update_layout(
-    title='Average CPU Usage: Experiment 1 - 100 Concurrent Users',
+    title='Average CPU Usage Of 5 Runs: Experiment 1 - 100 Concurrent Users',
     hovermode='x unified',
 )
 
