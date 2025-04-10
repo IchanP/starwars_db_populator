@@ -1,0 +1,23 @@
+Directory: EX2_Batched              Directory: EX2_Batched    Test Case: ex2_batch
+  Combined: 35.89%                      Energy: 33.15W          Avg. Res. Time: 165.00 ms
+  Server: 33.84%                                                Std. Dev. : 89.10 ms
+  Redis: 0.01%
+  Postgres: 2.04%
+
+Directory: EX2_Cache                Directory: EX2_Cache      Test Case: ex2_cache
+  Combined: 8.31%                       Energy: 25.94W          Avg. Res. Time: 6.00 ms
+  Server: 6.96%                                                 Std. Dev. : 2.10 ms
+  Redis: 1.33%
+  Postgres: 0.02%
+
+Directory: EX2_Cached_Batched       Directory: EX2_Cached_Batched     Test Case: ex2_batched_cached
+  Combined: 9.08%                       Energy: 25.69W                  Avg. Res. Time: 20.00 ms
+  Server: 7.05%                                                         Std. Dev. : 2.81 ms
+  Redis: 2.01%
+  Postgres: 0.02%
+
+Directory: EX2_No_Cache_No_Batch    Directory: EX2_No_Cache_No_Batch    Test Case: ex2_no_cache_no_batch
+  Combined: 27.72%                      Energy: 29.71W                    Avg. Res. Time: 31.00 ms
+  Server: 25.91%                                                          Std. Dev. : 4.52 ms
+  Redis: 0.01%
+  Postgres: 1.81%
