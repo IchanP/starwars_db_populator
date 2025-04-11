@@ -1,15 +1,25 @@
+# NOTE variables that needs to be set!
+# The base_dir path needs to be set to the folder containing the directories
+# directories needs to be set to all the directories that should be parsed
+
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import glob
 import warnings
+import os
+
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-# File paths
-combined_file_paths = glob.glob("./data/100/Combined*.csv")
-server_file_paths = glob.glob("./data/100/Server*.csv")
-redis_file_paths = glob.glob("./data/100/Redis*.csv")
-postgres_file_paths = glob.glob("./data/100/Postgres*.csv")
+# TODO - Set me!
+# Base directory containing the data
+base_dir = "./data/data_machine_2/"
+
+# TODO - Set me!
+# Directories to read from
+directories = ["EX2_Batched", "EX2_Cache", "EX2_Cached_Batched", "EX2_No_Cache_No_Batch"]
+
+average_cpu_usage = {directory: {} for directory in directories}
 
 # Create subplot figure
 fig = make_subplots(
@@ -17,7 +27,7 @@ fig = make_subplots(
     subplot_titles=['Combined', 'Server', 'Redis', 'Postgres']
 )
 
-def plot_group_files(file_list, row, col, y_range):
+def plot_group_files(file_list, directory_name, row, col, y_range):
     dfs = []
 
     # Read and preprocess each CSV file in the group
@@ -43,14 +53,18 @@ def plot_group_files(file_list, row, col, y_range):
     new_time_index = pd.timedelta_range(start="0s", periods=61, freq="5S").total_seconds()
     downsampled_df.index = new_time_index
 
+    # Calculate the total average CPU usage for this file type
+    total_average = downsampled_df.mean().mean()
+    average_cpu_usage[directory_name][file_list[0].split('/')[-1].split('_')[0]] = total_average
+
     # Plot each column as a stacked line in the specified subplot
     for col_name in downsampled_df.columns:
         fig.add_trace(go.Scatter(
             x=downsampled_df.index,
             y=downsampled_df[col_name],
             stackgroup='one',
-            name=col_name,
-            showlegend=False
+            name=f"{directory_name} - {col_name}",
+            showlegend=True
         ), row=row, col=col)
 
     # Axis labels and range
@@ -58,10 +72,16 @@ def plot_group_files(file_list, row, col, y_range):
     fig.update_yaxes(title_text='CPU Usage (%)', range=y_range, row=row, col=col)
 
 # Plot each group with proper Y-axis ranges
-plot_group_files(combined_file_paths, 1, 1, y_range=[0, 100])
-plot_group_files(server_file_paths, 1, 2, y_range=[0, 100])
-plot_group_files(redis_file_paths, 2, 1, y_range=[0, 10])
-plot_group_files(postgres_file_paths, 2, 2, y_range=[0, 10])
+for directory in directories:
+    combined_file_paths = glob.glob(os.path.join(base_dir, directory, "Combined*.csv"))
+    server_file_paths = glob.glob(os.path.join(base_dir, directory, "Server*.csv"))
+    redis_file_paths = glob.glob(os.path.join(base_dir, directory, "Redis*.csv"))
+    postgres_file_paths = glob.glob(os.path.join(base_dir, directory, "Postgres*.csv"))
+
+    plot_group_files(combined_file_paths, directory, 1, 1, y_range=[0, 100])
+    plot_group_files(server_file_paths, directory, 1, 2, y_range=[0, 100])
+    plot_group_files(redis_file_paths, directory, 2, 1, y_range=[0, 10])
+    plot_group_files(postgres_file_paths, directory, 2, 2, y_range=[0, 10])
 
 # Final layout
 fig.update_layout(
@@ -70,3 +90,10 @@ fig.update_layout(
 )
 
 fig.show()
+
+# Print the total average CPU usage per directory and file type
+for directory, file_types in average_cpu_usage.items():
+    print(f"Directory: {directory}")
+    for file_type, avg_cpu in file_types.items():
+        file_type: str
+        print(f"  {file_type.split(" ")[0]}: {avg_cpu:.2f}%")
