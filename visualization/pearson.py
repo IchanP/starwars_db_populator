@@ -28,16 +28,16 @@ average_cpus = []
 average_energies = []
 
 # --- Loop through each folder in ./data/data_machine_1 ---
-base_dir = "./data/data_machine_1/"
+base_dir = "./data/data_machine_1/" #TODO: ÄNDRA TILL SIN EGNA FOLDER
 for folder in os.listdir(base_dir):
     folder_path = os.path.join(base_dir, folder)
     if os.path.isdir(folder_path):  # Only process subfolders
         print(f"Processing folder: {folder}")
         
         # Prepare file paths for the current folder
-        summary_file_path = os.path.join(folder_path, "summary.csv")
-        combined_file_paths = glob.glob(os.path.join(folder_path, "Combined*.csv"))
-        powerapi_file_paths = glob.glob(os.path.join(folder_path, "PowerAPI*.csv"))
+        summary_file_path = os.path.join(folder_path, "summary.csv") #TODO: ÄNDRA FILNAMN
+        combined_file_paths = glob.glob(os.path.join(folder_path, "Combined*.csv")) #TODO: ÄNDRA FILNAMN
+        powerapi_file_paths = glob.glob(os.path.join(folder_path, "PowerAPI*.csv")) #TODO: ÄNDRA FILNAMN
         
         # --- Load and prepare summary.csv ---
         if os.path.exists(summary_file_path):
@@ -75,8 +75,8 @@ cpu_energy_records = []
 for folder in os.listdir(base_dir):
     folder_path = os.path.join(base_dir, folder)
     if os.path.isdir(folder_path):
-        combined_file_paths = glob.glob(os.path.join(folder_path, "Combined*.csv"))
-        powerapi_file_paths = glob.glob(os.path.join(folder_path, "PowerAPI*.csv"))
+        combined_file_paths = glob.glob(os.path.join(folder_path, "Combined*.csv")) #TODO: ÄNDRA FILNAMN
+        powerapi_file_paths = glob.glob(os.path.join(folder_path, "PowerAPI*.csv")) #TODO: ÄNDRA FILNAMN
 
         for cpu_file, energy_file in zip(combined_file_paths, powerapi_file_paths):
             # Read and resample CPU data
@@ -116,11 +116,11 @@ df_full_scatter = pd.DataFrame(cpu_energy_records)
 
 # --- Create a subplot layout ---
 fig = make_subplots(
-    rows=1, cols=2,
-    column_widths=[0.5, 0.5],
+    rows=1, cols=3,
+    column_widths=[0.45, 0.1, 0.45],
     row_heights=[1],
-    subplot_titles=["Pearson Correlation Heatmap", "Full Data: CPU Usage vs Energy Consumption"],
-    shared_yaxes=True
+    subplot_titles=["Full Data: CPU Usage vs Energy Consumption","", "Pearson Correlation Heatmap" ],
+    shared_yaxes=True,
 )
 
 # --- Add the Heatmap to the first subplot ---
@@ -134,9 +134,16 @@ heatmap = go.Heatmap(
     zmin=-1, zmax=1,
     text=correlation_matrix.values,  # Display Pearson values inside the boxes
     texttemplate="%{text:.2f}",  # Format the Pearson values to 2 decimal places
-
 )
-fig.add_trace(heatmap, row=1, col=2)
+fig.add_trace(heatmap, row=1, col=3)
+fig.update_layout(
+    yaxis3=dict(
+        tickangle=0,  # Ensure horizontal labels for the y-axis
+        tickvals=list(range(len(correlation_matrix.index))),
+        ticktext=correlation_matrix.index,  # Set custom y-axis tick text (correlation matrix row names)
+        showticklabels=True,  # Make sure the y-axis labels are shown
+    ),
+)
 
 # --- Add the Scatter Plot to the second subplot ---
 scatter = go.Scatter(
@@ -171,10 +178,11 @@ fig.add_trace(trendline, row=1, col=1)
 
 # --- Update layout for better spacing and titles ---
 fig.update_layout(
-    height=600,
+    height=540,
     width=1200,
-    title_text="Correlation and Scatter Plot",
+    title_text="Correlation: Heatmap and Scatter Plot",
     showlegend=False,
+    autosize=False,
 )
 
 # --- Show the combined plot ---
