@@ -4,7 +4,10 @@ import os
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import warnings
+from sklearn.linear_model import LinearRegression
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # --- Function to get per-file averages ---
@@ -66,16 +69,6 @@ correlation_matrix = df_corr.corr(method='pearson')
 print("Pearson Correlation Matrix:")
 print(correlation_matrix)
 
-# --- Plot heatmap ---
-fig = px.imshow(
-    correlation_matrix,
-    text_auto=True,
-    color_continuous_scale="RdBu",
-    title="Pearson Correlation Heatmap"
-)
-fig.update_layout(width=500, height=500)
-fig.show()
-
 # --- Collect all raw CPU and Energy readings for detailed scatter plot ---
 cpu_energy_records = []
 
@@ -121,16 +114,68 @@ for folder in os.listdir(base_dir):
 # --- Create DataFrame for full scatter plot ---
 df_full_scatter = pd.DataFrame(cpu_energy_records)
 
-# --- Plot scatter: Full Measurement CPU vs Energy ---
-fig_full_cpu_energy = px.scatter(
-    df_full_scatter,
-    x="CPU (%)",
-    y="Energy (W)",
-    title="Full Data: CPU Usage vs Energy Consumption",
-    labels={
-        "CPU (%)": "CPU Usage (%)",
-        "Energy (W)": "Energy Consumption (W)"
-    },
-    trendline="ols"
+# --- Create a subplot layout ---
+fig = make_subplots(
+    rows=1, cols=2,
+    column_widths=[0.5, 0.5],
+    row_heights=[1],
+    subplot_titles=["Pearson Correlation Heatmap", "Full Data: CPU Usage vs Energy Consumption"],
+    shared_yaxes=True
 )
-fig_full_cpu_energy.show()
+
+# --- Add the Heatmap to the first subplot ---
+heatmap = go.Heatmap(
+    z=correlation_matrix.values,
+    x=correlation_matrix.columns,
+    y=correlation_matrix.index,
+    colorscale="RdBu",
+    colorbar=dict(title="Correlation"),
+    showscale=True,
+    zmin=-1, zmax=1,
+    text=correlation_matrix.values,  # Display Pearson values inside the boxes
+    texttemplate="%{text:.2f}",  # Format the Pearson values to 2 decimal places
+
+)
+fig.add_trace(heatmap, row=1, col=2)
+
+# --- Add the Scatter Plot to the second subplot ---
+scatter = go.Scatter(
+    x=df_full_scatter["CPU (%)"],
+    y=df_full_scatter["Energy (W)"],
+    mode="markers",
+    name="CPU vs Energy",
+    marker=dict(size=7, color="blue", opacity=0.7),
+)
+
+# --- Fit linear regression model for trendline ---
+X = df_full_scatter["CPU (%)"].values.reshape(-1, 1)  # Reshape for sklearn
+y = df_full_scatter["Energy (W)"].values
+
+regressor = LinearRegression()
+regressor.fit(X, y)
+
+# Predict the values for the trendline
+y_pred = regressor.predict(X)
+
+# --- Add the trendline to the scatter plot ---
+trendline = go.Scatter(
+    x=df_full_scatter["CPU (%)"],
+    y=y_pred,
+    mode="lines",
+    name="Trendline",
+    line=dict(color="red", width=2)
+)
+
+fig.add_trace(scatter, row=1, col=1)
+fig.add_trace(trendline, row=1, col=1)
+
+# --- Update layout for better spacing and titles ---
+fig.update_layout(
+    height=600,
+    width=1200,
+    title_text="Correlation and Scatter Plot",
+    showlegend=False,
+)
+
+# --- Show the combined plot ---
+fig.show()
