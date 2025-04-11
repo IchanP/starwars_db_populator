@@ -75,3 +75,62 @@ fig = px.imshow(
 )
 fig.update_layout(width=500, height=500)
 fig.show()
+
+# --- Collect all raw CPU and Energy readings for detailed scatter plot ---
+cpu_energy_records = []
+
+for folder in os.listdir(base_dir):
+    folder_path = os.path.join(base_dir, folder)
+    if os.path.isdir(folder_path):
+        combined_file_paths = glob.glob(os.path.join(folder_path, "Combined*.csv"))
+        powerapi_file_paths = glob.glob(os.path.join(folder_path, "PowerAPI*.csv"))
+
+        for cpu_file, energy_file in zip(combined_file_paths, powerapi_file_paths):
+            # Read and resample CPU data
+            df_cpu = pd.read_csv(cpu_file)
+            df_cpu.iloc[:, 0] = pd.to_datetime(df_cpu.iloc[:, 0])
+            df_cpu.set_index(df_cpu.columns[0], inplace=True)
+            df_cpu = df_cpu.map(lambda x: float(str(x).strip().rstrip('%W')) if isinstance(x, str) and (('%' in str(x)) or ('W' in str(x))) else x)
+            df_cpu = df_cpu.resample('5s').mean().dropna()
+
+            # Read and resample Energy data
+            df_energy = pd.read_csv(energy_file)
+            df_energy.iloc[:, 0] = pd.to_datetime(df_energy.iloc[:, 0])
+            df_energy.set_index(df_energy.columns[0], inplace=True)
+            df_energy = df_energy.map(lambda x: float(str(x).strip().rstrip('%W')) if isinstance(x, str) and (('%' in str(x)) or ('W' in str(x))) else x)
+            df_energy = df_energy.resample('5s').mean().dropna()
+
+            # Compute per-timestamp means and name the Series
+            cpu_series = df_cpu.mean(axis=1)
+            cpu_series.name = "CPU (%)"
+
+            energy_series = df_energy.mean(axis=1)
+            energy_series.name = "Energy (W)"
+
+            # Merge on timestamp
+            merged_df = pd.merge(cpu_series, energy_series, left_index=True, right_index=True)
+
+
+            # Append each row to the list
+            for _, row in merged_df.iterrows():
+                cpu_energy_records.append({
+                    "CPU (%)": row["CPU (%)"],
+                    "Energy (W)": row["Energy (W)"]
+                })
+
+# --- Create DataFrame for full scatter plot ---
+df_full_scatter = pd.DataFrame(cpu_energy_records)
+
+# --- Plot scatter: Full Measurement CPU vs Energy ---
+fig_full_cpu_energy = px.scatter(
+    df_full_scatter,
+    x="CPU (%)",
+    y="Energy (W)",
+    title="Full Data: CPU Usage vs Energy Consumption",
+    labels={
+        "CPU (%)": "CPU Usage (%)",
+        "Energy (W)": "Energy Consumption (W)"
+    },
+    trendline="ols"
+)
+fig_full_cpu_energy.show()
