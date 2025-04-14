@@ -12,11 +12,11 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # TODO - Set me!
 # Base directory containing the data
-base_dir = "./data/data_machine_2/"
+base_dir = "./data/data_machine_1/"
 
 # TODO - Set me!
 # Directories to read from
-directories = ["EX2_Batched", "EX2_Cache", "EX2_Cached_Batched", "EX2_No_Cache_No_Batch"]
+directories = ["100", "200", "300", "400", "500"]
 
 average_energy_usage = {directory: {} for directory in directories}
 
@@ -25,6 +25,7 @@ fig = go.Figure()
 
 def plot_powerapi_files(file_list, directory_name, y_range):
     dfs = []
+    print(file_list)
 
     for path in file_list:
         df = pd.read_csv(path)
@@ -37,7 +38,6 @@ def plot_powerapi_files(file_list, directory_name, y_range):
         df = df.map(lambda x: float(str(x).strip('W')) if isinstance(x, str) and 'W' in str(x) else x)
 
         dfs.append(df)
-
     # Combine and average by timestamp
     combined_df = pd.concat(dfs).groupby(level=0).mean()
 
@@ -66,7 +66,8 @@ def plot_powerapi_files(file_list, directory_name, y_range):
 
 # Plot PowerAPI data from each directory
 for directory in directories:
-    powerapi_file_paths = glob.glob(os.path.join(base_dir, directory, "Energy*.csv"))
+    powerapi_file_paths = glob.glob(os.path.join(base_dir, directory, "PowerAPI*.csv"))
+    print(powerapi_file_paths)
     plot_powerapi_files(powerapi_file_paths, directory, y_range=[0, 15])
 
 # Final layout
