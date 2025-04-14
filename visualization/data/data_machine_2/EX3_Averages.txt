@@ -1,0 +1,13 @@
+Directory: ex3 overfetch        Directory: ex3 overfetch      Test Case: ex3_optimization_overfetch                                 
+  Combined: 59.97%               PowerAPI: 33.57W                 Avg. Res. Time: 1020.00 ms
+  Server: 58.44%                                                  Std. Dev. : 655.31 ms
+  Redis: 0.01%
+  Postgres: 1.52%
+
+Directory: ex3 correct           Directory: ex3 correct         Test Case: ex3_optimization_correct
+  Combined: 67.30%                PowerAPI: 33.29W                  Avg. Res. Time: 962.00 ms
+  Server: 65.69%                                                    Std. Dev. : 283.26 ms
+  Redis: 0.01%
+  Postgres: 1.60%
+
+

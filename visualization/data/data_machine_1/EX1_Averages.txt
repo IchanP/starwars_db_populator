@@ -1,0 +1,25 @@
+Directory: 100                  Directory: 100                  Test Case: ex1_100
+  Combined: 61.33%                PowerAPI: 6.68W                 Avg. Res. Time: 2039.00 ms
+  Server: 59.80%                                                  Std. Dev. : 354.51 ms
+  Redis: 0.07%
+  Postgres: 1.47%
+Directory: 200                  Directory: 200                  Test Case: ex1_200
+  Combined: 53.34%                PowerAPI: 7.31W                 Avg. Res. Time: 4262.00 ms
+  Server: 51.68%                                                  Std. Dev. : 556.64 ms
+  Redis: 0.06%
+  Postgres: 1.60%
+Directory: 300                  Directory: 300                  Test Case: ex1_300
+  Combined: 65.81%               PowerAPI: 6.40W                  Avg. Res. Time: 6367.00 ms
+  Server: 64.23%                                                  Std. Dev. : 1168.15 ms
+  Redis: 0.06%
+  Postgres: 1.52%
+Directory: 400                  Directory: 400                  Test Case: ex1_400
+  Combined: 62.91%               PowerAPI: 6.48W                 Avg. Res. Time: 8409.00 ms
+  Server: 61.30%                                                 Std. Dev. : 2172.81 ms
+  Redis: 0.07%
+  Postgres: 1.55%
+Directory: 500                  Directory: 500                  Test Case: ex1_500
+  Combined: 56.88%               PowerAPI: 8.36W                    Avg. Res. Time: 9862.00 ms
+  Server: 55.22%                                                    Std. Dev. : 2335.38 ms
+  Redis: 0.07%
+  Postgres: 1.58%

@@ -1,3 +1,0 @@
-Label,# Samples,Average,Min,Max,Std. Dev.,Error %,Throughput,Received KB/sec,Sent KB/sec,Avg. Bytes
-Unoptimized Query,161182,1020,13,17872,655.31,0.000%,80.91356,4486.83,53.65,56783.0
-TOTAL,161182,1020,13,17872,655.31,0.000%,80.91356,4486.83,53.65,56783.0
