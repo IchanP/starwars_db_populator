@@ -9,10 +9,10 @@ import glob
 from util.string_splitter import split_last_slash_first_dot
 
 # TODO - Set me!
-base_dir = "./data/data_machine_2/response_times/"
+base_dir = "./data/machine_2_res_time/"
 
 # TODO - Set me!
-path = base_dir + "ex2_*.csv"
+path = base_dir + "ex1_*.csv"
 
 # Define the path to your data files
 data_files = glob.glob(path)
@@ -23,6 +23,7 @@ data_frames = [pd.read_csv(file) for file in data_files]
 # Create subplots
 num_plots = len(data_frames)
 fig = make_subplots(rows=1, cols=num_plots, subplot_titles=[split_last_slash_first_dot(data_files[i]) for i in range(num_plots)])
+
 
 # Plot data for each file
 for i, df in enumerate(data_frames):
@@ -57,10 +58,17 @@ for i, df in enumerate(data_frames):
         name=legend_name
     ), row=1, col=i+1)
 
+
+
+# Calculate the maximum average response time across all data frames
+max_avg_response_time = max(df[df['Label'] == 'TOTAL']['Average'].values[0] for df in data_frames)
+
+# TODO the hardcoded value may need slight adjustments
+y_max = max_avg_response_time + 300
+
 # Update layout
 fig.update_layout(height=600, width=1800, title_text="Response Times Under Varying Load")
 
-y_max = 2000
 for i in range(1, num_plots + 1):
     fig.update_yaxes(ticksuffix=" ms", row=1, range=[0, y_max], col=i)
 
