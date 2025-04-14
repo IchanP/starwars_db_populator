@@ -1,5 +1,4 @@
-"Time","100 * sum(irate(container_cpu_usage_seconds_total{name=~""ts-server-server_app-1""}[5m])) / 12
-"
+"Time","GraphQL server"
 2025-04-14 07:37:10,9.17%
 2025-04-14 07:37:15,9.27%
 2025-04-14 07:37:20,9.13%

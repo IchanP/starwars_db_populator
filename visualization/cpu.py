@@ -13,7 +13,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # TODO - Set me!
 # Base directory containing the data
-base_dir = "./data/data_machine_2/"
+base_dir = "./data/data_machine_1/"
 
 # TODO - Set me!
 # Directories to read from
