@@ -13,7 +13,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # TODO - Set me!
 # Base directory containing the data
-base_dir = "./data/data_machine_2/"
+base_dir = "./data/data_machine_1/"
 
 # TODO - Set me!
 # Directories to read from
@@ -83,7 +83,7 @@ for directory in directories:
 
 # Final layout
 fig.update_layout(
-    title='Average CPU Usage: Experiment 1 - 100 Concurrent Users',
+    title='Average CPU Usage: Experiment 1',
     hovermode='x unified',
 )
 
