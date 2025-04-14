@@ -29,7 +29,7 @@ average_cpus = []
 average_energies = []
 
 # --- Loop through each folder in ./data/data_machine_1 ---
-base_dir = "./data/data_machine_2/" #TODO: ÄNDRA TILL SIN EGNA FOLDER
+base_dir = "./data/data_machine_1/" #TODO: ÄNDRA TILL SIN EGNA FOLDER
 for folder in os.listdir(base_dir):
     folder_path = os.path.join(base_dir, folder)
     if os.path.isdir(folder_path):  # Only process subfolders
