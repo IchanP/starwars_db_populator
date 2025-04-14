@@ -10,9 +10,11 @@ import os
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
+experiment_number = "3"
+
 # TODO - Set me!
 # Base directory containing the data
-base_dir = "./data/data_machine_2/"
+base_dir = "./data/data_machine_1/"
 
 # TODO - Set me!
 # Directories to read from
@@ -71,8 +73,25 @@ for directory in directories:
 
 # Final layout
 fig.update_layout(
-    title='Average Power Consumption: Experiment 2',
-    hovermode='x unified'
+    title='Average Power Consumption: Experiment 3',
+    title_font=dict(size=24),  # Title font size
+    hovermode='x unified',
+    font=dict(
+        family='Arial',
+        size=24,              # Default font size for all text
+        color='black'
+    ),
+    legend=dict(
+        font=dict(size=24)   # Legend font size
+    ),
+    xaxis=dict(
+        title_font=dict(size=24),
+        tickfont=dict(size=24)
+    ),
+    yaxis=dict(
+        title_font=dict(size=24),
+        tickfont=dict(size=24)
+    )
 )
 
 fig.show()

@@ -12,7 +12,7 @@ from util.string_splitter import split_last_slash_first_dot
 base_dir = "./data/machine_2_res_time/"
 
 # TODO - Set me!
-path = base_dir + "ex1_*.csv"
+path = base_dir + "ex3_*.csv"
 
 # Define the path to your data files
 data_files = glob.glob(path)
