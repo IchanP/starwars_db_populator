@@ -17,8 +17,7 @@ base_dir = "./data/data_machine_2/"
 
 # TODO - Set me!
 # Directories to read from
-directories = ["EX2_Batched", "EX2_Cache", "EX2_Cached_Batched", "EX2_No_Cache_No_Batch"]
-
+directories = ["100", "200", "300", "400", "500"]
 average_cpu_usage = {directory: {} for directory in directories}
 
 # Create subplot figure
@@ -62,7 +61,6 @@ def plot_group_files(file_list, directory_name, row, col, y_range):
         fig.add_trace(go.Scatter(
             x=downsampled_df.index,
             y=downsampled_df[col_name],
-            stackgroup='one',
             name=f"{directory_name} - {col_name}",
             showlegend=True
         ), row=row, col=col)
