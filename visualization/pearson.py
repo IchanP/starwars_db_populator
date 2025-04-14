@@ -117,11 +117,12 @@ df_full_scatter = pd.DataFrame(cpu_energy_records)
 
 # --- Create a subplot layout ---
 fig = make_subplots(
-    rows=1, cols=3,
-    column_widths=[0.45, 0.1, 0.45],
-    row_heights=[1],
+    rows=2, cols=1,
+    column_widths=[1],
+    row_heights=[0.5, 0.5],
     subplot_titles=["Full Data: CPU Usage vs Energy Consumption","", "Pearson Correlation Heatmap" ],
     shared_yaxes=True,
+    vertical_spacing=0.10
 )
 
 # --- Add the Heatmap to the first subplot ---
@@ -130,13 +131,21 @@ heatmap = go.Heatmap(
     x=correlation_matrix.columns,
     y=correlation_matrix.index,
     colorscale="RdBu",
-    colorbar=dict(title="Correlation"),
+    colorbar=dict(
+        title="Correlation",
+        ticks="outside",
+        lenmode="fraction",
+        len=0.4,           # Adjust to match subplot height (50% total height -> 0.5 * 0.8 = 0.4)
+        yanchor="middle",
+        y=0.225             # Aligns it with second subplot
+    ),
     showscale=True,
     zmin=-1, zmax=1,
-    text=correlation_matrix.values,  # Display Pearson values inside the boxes
-    texttemplate="%{text:.2f}",  # Format the Pearson values to 2 decimal places
+    text=correlation_matrix.values,
+    texttemplate="%{text:.2f}",
 )
-fig.add_trace(heatmap, row=1, col=3)
+
+fig.add_trace(heatmap, row=2, col=1)
 fig.update_layout(
     yaxis3=dict(
         tickangle=0,  # Ensure horizontal labels for the y-axis
@@ -179,8 +188,8 @@ fig.add_trace(trendline, row=1, col=1)
 
 # --- Update layout for better spacing and titles ---
 fig.update_layout(
-    height=540,
-    width=1200,
+    height=1000,
+    width=650,
     title_text="Correlation: Heatmap and Scatter Plot",
     showlegend=False,
     autosize=False,
