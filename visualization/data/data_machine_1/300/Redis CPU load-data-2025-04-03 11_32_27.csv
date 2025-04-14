@@ -1,5 +1,4 @@
-"Time","100 * sum(irate(container_cpu_usage_seconds_total{name=~""ts-server-redis-1""}[5m])) / 12
-"
+"Time","Redis"
 2025-04-03 11:26:55,0.0689%
 2025-04-03 11:27:00,0.0732%
 2025-04-03 11:27:05,0.0690%
