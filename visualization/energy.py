@@ -12,11 +12,11 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # TODO - Set me!
 # Base directory containing the data
-base_dir = "./data/data_machine_2/"
+base_dir = "./data/data_machine_1/"
 
 # TODO - Set me!
 # Directories to read from
-directories = ["ex3 correct", "ex3 overfetch"]
+directories = ["ex2 batch", "ex2 batch&cache", "ex2 cache", "ex2 noCachenoBatch"]
 
 average_energy_usage = {directory: {} for directory in directories}
 
