@@ -1,5 +1,4 @@
-"Time","100 * sum(irate(container_cpu_usage_seconds_total{name=~""ts-server-postgres_db-1""}[5m])) / 12
-"
+"Time","Postgres"
 2025-04-07 10:50:50,1.76%
 2025-04-07 10:50:55,1.82%
 2025-04-07 10:51:00,1.68%

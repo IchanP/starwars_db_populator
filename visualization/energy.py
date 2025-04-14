@@ -16,7 +16,7 @@ base_dir = "./data/data_machine_2/"
 
 # TODO - Set me!
 # Directories to read from
-directories = ["100", "200", "300", "400", "500"]
+directories = ["ex3 correct", "ex3 overfetch"]
 
 average_energy_usage = {directory: {} for directory in directories}
 

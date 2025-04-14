@@ -1,5 +1,4 @@
-"Time","100 * sum(irate(container_cpu_usage_seconds_total{name=~""ts-server-(server_app-1|redis-1|postgres_db-1)""}[5m])) / 12
-"
+"Time","Grouped CPU Load"
 2025-04-07 11:53:20,72.7%
 2025-04-07 11:53:25,74.6%
 2025-04-07 11:53:30,77.0%
