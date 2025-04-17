@@ -17,7 +17,7 @@ base_dir = "./data/data_machine_1/"
 
 # TODO - Set me!
 # Directories to read from
-directories = ["ex2 batch", "ex2 batch&cache", "ex2 cache", "ex2 noCachenoBatch"]
+directories = ["ex3 overfetch", "ex3 correct"]
 average_cpu_usage = {directory: {} for directory in directories}
 
 # Create subplot figure

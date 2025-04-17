@@ -9,7 +9,7 @@ import glob
 from util.string_splitter import split_last_slash_first_dot
 
 # TODO - Set me!
-base_dir = "./data/machine_1_res_time/"
+base_dir = "./data/machine_2_res_time/"
 
 # TODO - Set me!
 path = base_dir + "ex2_*.csv"
@@ -64,7 +64,7 @@ for i, df in enumerate(data_frames):
 max_avg_response_time = max(df[df['Label'] == 'TOTAL']['Average'].values[0] for df in data_frames)
 
 # TODO the hardcoded value may need slight adjustments
-y_max = max_avg_response_time + 1000
+y_max = max_avg_response_time + 100
 
 # Update layout
 fig.update_layout(height=600, width=1800, title_text="Response Times under varying queries")

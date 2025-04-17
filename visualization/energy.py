@@ -1,94 +1,111 @@
 # NOTE variables that needs to be set!
 # The base_dir path needs to be set to the folder containing the directories
 # directories needs to be set to all the directories that should be parsed
+# experiment_number needs to be set to specify which experiment to analyze
 
 import pandas as pd
 import plotly.graph_objects as go
 import glob
 import warnings
 import os
+import numpy as np
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # TODO - Set me!
-# Base directory containing the data
-base_dir = "./data/data_machine_1/"
-
+# Experiment number (1, 2, or 3)
+experiment_number = 3
 # TODO - Set me!
-# Directories to read from
-directories = ["ex2 batch", "ex2 batch&cache", "ex2 cache", "ex2 noCachenoBatch"]
+# Machine (1, 2)
+machine = 2
 
+# Base directory containing the data
+base_dir = f"./data/data_machine_{machine}/"
+
+# Directories to read from - will be set based on experiment_number
+experiment_dirs = {
+    1: ["100", "200", "300", "400", "500"],
+    2: ["ex2 batch", "ex2 batch&cache", "ex2 cache", "ex2 noCachenoBatch"],
+    3: ["ex3 overfetch", "ex3 correct"]
+}
+
+directories = experiment_dirs[experiment_number]
 average_energy_usage = {directory: {} for directory in directories}
 
-# Create a single subplot figure
-fig = go.Figure()
-
-def plot_powerapi_files(file_list, directory_name, y_range):
+def process_powerapi_files(file_list, directory_name):
     dfs = []
-
+    all_values = []
     for path in file_list:
         df = pd.read_csv(path)
-
+        
         # Convert first column to datetime and set as index
         df.iloc[:, 0] = pd.to_datetime(df.iloc[:, 0])
         df.set_index(df.columns[0], inplace=True)
-
+        
         # Clean watt strings, if any
         df = df.map(lambda x: float(str(x).strip('W')) if isinstance(x, str) and 'W' in str(x) else x)
-
+        
         dfs.append(df)
-
+        # Collect all values for std dev calculation
+        all_values.extend(df.values.flatten())
+    
     # Combine and average by timestamp
     combined_df = pd.concat(dfs).groupby(level=0).mean()
-
-    # Resample to 5-second intervals and get first 61 points (~5 mins)
-    downsampled_df = combined_df.resample('5S').mean().dropna().iloc[:61]
-
-    # Replace index with elapsed time in seconds
-    new_time_index = pd.timedelta_range(start="0s", periods=61, freq="5S").total_seconds()
-    downsampled_df.index = new_time_index
-
-    total_average = downsampled_df.mean().mean()
+    
+    # Calculate overall average and standard deviation
+    total_average = combined_df.mean().mean()
+    std_dev = np.std(all_values)
     average_energy_usage[directory_name][file_list[0].split('/')[-1].split('_')[0]] = total_average
+    
+    return total_average, std_dev
 
-    # Plot each column as a line
-    for col_name in downsampled_df.columns:
-        fig.add_trace(go.Scatter(
-            x=downsampled_df.index,
-            y=downsampled_df[col_name],
-            name=f"{directory_name}",
-            showlegend=True
-        ))
-
-    # Update axes
-    fig.update_xaxes(title_text='Elapsed time (s)', range=[0, 300])
-    fig.update_yaxes(title_text='Power Consumption (W)', range=y_range)
-
-# Plot PowerAPI data from each directory
+# Process data and collect averages and standard deviations
+averages = []
+std_devs = []
 for directory in directories:
     powerapi_file_paths = glob.glob(os.path.join(base_dir, directory, "PowerAPI*.csv"))
-    plot_powerapi_files(powerapi_file_paths, directory, y_range=[0, 15])
+    avg, std = process_powerapi_files(powerapi_file_paths, directory)
+    averages.append(avg)
+    std_devs.append(std)
 
-# Final layout
+# Create bar chart with error bars
+fig = go.Figure(data=[
+    go.Bar(
+        name='Average Power',
+        x=directories,
+        y=averages,
+        text=[f'{avg:.2f}W' for avg in averages],
+        textposition='auto',
+        error_y=dict(
+            type='data',
+            array=std_devs,
+            visible=True,
+            color='black',
+            thickness=2.5,  # Increased from 1 to 2.5
+            width=6
+        )
+    )
+])
+
+# Update layout
 fig.update_layout(
-    title='Average Power Consumption: Experiment 2',
-    title_font=dict(size=24),  # Title font size
-    hovermode='x unified',
+    title=f'Average Power Consumption: Experiment {experiment_number}',
+    title_font=dict(size=24),
     font=dict(
         family='Arial',
-        size=20,              # Default font size for all text
+        size=24,
         color='black'
     ),
-    legend=dict(
-        font=dict(size=24)   # Legend font size
-    ),
     xaxis=dict(
+        title_text='Implementation Type',
         title_font=dict(size=24),
         tickfont=dict(size=24)
     ),
     yaxis=dict(
+        title_text='Average Power Consumption (W)',
         title_font=dict(size=24),
-        tickfont=dict(size=24)
+        tickfont=dict(size=24),
+        range=[0, max(averages) * 1.1]  # Set y-axis range with 10% padding
     )
 )
 
@@ -97,6 +114,5 @@ fig.show()
 # Print the total average Energy usage per directory and file type
 for directory, file_types in average_energy_usage.items():
     print(f"Directory: {directory}")
-    for file_type, avg_cpu in file_types.items():
-        file_type: str
-        print(f"  {file_type.split(" ")[0]}: {avg_cpu:.2f}W")
+    for file_type, avg_energy in file_types.items():
+        print(f"  {file_type}: {avg_energy:.2f}W")
