@@ -8,7 +8,7 @@ import numpy as np
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # TODO - Set me!a
-experiment_number = 2
+experiment_number = 1
 
 # TODO - Set me!
 machine = 2
@@ -88,7 +88,7 @@ fig = go.Figure(data=[
 
 # Update layout
 fig.update_layout(
-    title='CPU Usage: Experiment 3',
+    title=f'CPU Usage: Experiment {experiment_number}',
     title_font=dict(size=font_size),
     font=dict(
         family='Arial',
