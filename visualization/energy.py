@@ -12,9 +12,11 @@ import numpy as np
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
+font_size = 38
+
 # TODO - Set me!
 # Experiment number (1, 2, or 3)
-experiment_number = 1
+experiment_number = 2
 # TODO - Set me!
 # Machine (1, 2)
 machine = 2
@@ -97,7 +99,8 @@ fig = go.Figure(data=[
         y=relative_averages,
         text=[f'{avg:+.1f}%' for avg in relative_averages],
         textangle=0,
-        cliponaxis=False,  
+        cliponaxis=False,
+        textfont=dict(size=48),  
         error_y=dict(
             type='data',
             array=relative_std_devs,
@@ -112,21 +115,21 @@ fig = go.Figure(data=[
 # Update layout
 fig.update_layout(
     title=f'Relative Power Consumption: Experiment {experiment_number}',
-    title_font=dict(size=24),
+    title_font=dict(size=font_size),
     font=dict(
         family='Arial',
-        size=24,
+        size=font_size,
         color='black'
     ),
     xaxis=dict(
         title_text='Implementation Type',
-        title_font=dict(size=24),
-        tickfont=dict(size=24)
+        title_font=dict(size=font_size),
+        tickfont=dict(size=font_size)
     ),
     yaxis=dict(
         title_text='Power Consumption Relative to Baseline (%)',
-        title_font=dict(size=24),
-        tickfont=dict(size=24),
+        title_font=dict(size=font_size),
+        tickfont=dict(size=font_size),
         range=[min(relative_averages) * 1.1 if min(relative_averages) < 0 else 0, 
                max(relative_averages) * 1.1]
     )
