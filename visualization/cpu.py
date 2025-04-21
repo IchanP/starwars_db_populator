@@ -19,8 +19,8 @@ base_dir = f"./data/data_machine_{machine}/"
 
 experiment_dirs = {
     1: ["100", "200", "300", "400", "500"],
-    2: ["ex2 batch", "ex2 batch&cache", "ex2 cache", "ex2 noCachenoBatch"],
-    3: ["ex3 overfetch", "ex3 correct"]
+    2: ["Batch", "Batch & Cache", "Cache", "No Cache or Batch"],
+    3: ["Normal Fetch", "Overfetch"]
 }
 
 directories = experiment_dirs[experiment_number]
