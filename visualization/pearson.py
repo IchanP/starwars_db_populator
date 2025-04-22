@@ -120,7 +120,7 @@ fig = make_subplots(
     rows=1, cols=3,
     column_widths=[0.45, 0.1, 0.45],
     row_heights=[1],
-    subplot_titles=["Full Data: CPU Usage vs Energy Consumption","", "Pearson Correlation Heatmap" ],
+    subplot_titles=["CPU Usage vs Energy Consumption","", "Pearson Correlation Heatmap" ],
     shared_yaxes=True,
 )
 
