@@ -29,7 +29,7 @@ server.get("/", function (request, reply) {
 server.register(postgres);
 
 // Redis
-server.register(redis);
+// server.register(redis);
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -46,7 +46,7 @@ server.register(mercurius, {
     return {
       prisma: server.prisma,
       // NOTE comment out when needed
-      redis: server.redis,
+      // redis: server.redis,
     };
   },
 });
