@@ -8,10 +8,10 @@ from util.string_splitter import split_last_slash_first_dot
 import glob
 
 # TODO - Set me!
-machine = 2
+machine = 1
 
 # TODO - Set me!
-experiment_number = 1
+experiment_number = 2
 
 font_size = 40
 
