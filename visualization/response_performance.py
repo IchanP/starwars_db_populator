@@ -8,60 +8,80 @@ from util.string_splitter import split_last_slash_first_dot
 import glob
 
 # TODO - Set me!
-machine = 1
+machines = [1, 2]
 
 # TODO - Set me!
-experiment_number = 2
+experiment_number = 3  # Changed to 1 to match the image
 
 font_size = 40
 
-base_dir = f"./data/machine_{machine}_res_time/"
+base_dir_template = "./data/machine_{machine}_res_time/"
 
-path = base_dir + f"EX{experiment_number}*.csv"
+# Collect data for both machines
+machine_data = {machine: {} for machine in machines}
+all_legend_names = set()
 
-# Define the path to your data files
-data_files = glob.glob(path)
+for machine in machines:
+    base_dir = base_dir_template.format(machine=machine)
+    path = base_dir + f"EX{experiment_number}*.csv"
+    data_files = glob.glob(path)
+    for file in data_files:
+        df = pd.read_csv(file).copy()
+        totals = df[df['Label'] == 'TOTAL'].copy()
+        totals.loc[:, 'Label'] = 'Avg. Response Time'
 
-# Create a single figure
+        avg_response_time = totals['Average'].values[0]
+        std_dev = totals['Std. Dev.'].values[0]
+
+        legend_name = split_last_slash_first_dot(file)
+        legend_name = legend_name.split('_', 1)[1] if '_' in legend_name else legend_name
+        all_legend_names.add(legend_name)
+        machine_data[machine][legend_name] = {'avg': avg_response_time, 'std': std_dev}
+
+# Convert the set of legend names to a sorted list
+sorted_legend_names = sorted(list(all_legend_names))
+
+# Create the figure
 fig = go.Figure()
 
-# Process data from each file
-for i, file in enumerate(data_files):
-    df = pd.read_csv(file)
-    totals = df[df['Label'] == 'TOTAL']
-    totals['Label'] = 'Avg. Response Time'
+# Define colors for machines
+machine_colors = {1: 'blue', 2: 'red'}
 
-    # Extract average response time and standard deviation
-    avg_response_time = totals['Average'].values[0]
-    std_dev = totals['Std. Dev.'].values[0]
-
-    # Extract the legend name from the filename and clean it
-    legend_name = split_last_slash_first_dot(file)
-    legend_name = legend_name.split('_', 1)[1] if '_' in legend_name else legend_name
-
-    # Print the information
-    print(f"  Test Case: {legend_name}")
-    print(f"  Avg. Res. Time: {avg_response_time:.2f} ms")
-    print(f"  Std. Dev. : {std_dev:.2f} ms")
+# Add traces for each machine, iterating through the sorted test cases
+for machine in machines:
+    x_values = []
+    y_values = []
+    error_values = []
+    names = []
+    for legend_name in sorted_legend_names:
+        if legend_name in machine_data[machine]:
+            x_values.append(legend_name)
+            y_values.append(machine_data[machine][legend_name]['avg'])
+            error_values.append(machine_data[machine][legend_name]['std'])
+            names.append(f'Machine {machine}')
 
     fig.add_trace(go.Bar(
-        name=legend_name,
-        x=[legend_name],
-        y=[avg_response_time],
-        text=[f"{avg_response_time:.1f}"],
-        textposition='auto',
+        name=f'Machine {machine}',
+        x=x_values,
+        y=y_values,
+        marker_color=machine_colors[machine],
+        text=[f"{val:.1f}" for val in y_values],
+        textposition='outside',
         textfont=dict(size=35),
         error_y=dict(
             type='data',
-            array=[std_dev],
+            array=error_values,
             thickness=4,
             width=6,
             visible=True
         )
     ))
 
-# Calculate the maximum average response time across all files
-max_avg_response_time = max(pd.read_csv(file)[pd.read_csv(file)['Label'] == 'TOTAL']['Average'].values[0] for file in data_files)
+# Calculate the maximum average response time
+max_avg_response_time = 0
+for machine in machines:
+    for legend_name in machine_data[machine]:
+        max_avg_response_time = max(max_avg_response_time, machine_data[machine][legend_name]['avg'])
 
 # TODO the hardcoded value may need slight adjustments
 y_max = max_avg_response_time + 300
@@ -86,7 +106,28 @@ fig.update_layout(
         tickfont=dict(size=25),
         title_font=dict(size=28)
     ),
-    showlegend=False
+    barmode='group'
 )
 
 fig.show()
+
+# Print the information for each machine and test case
+for machine in machines:
+    print(f"\n--- Machine {machine} ---")
+    base_dir = base_dir_template.format(machine=machine)
+    path = base_dir + f"EX{experiment_number}*.csv"
+    data_files = glob.glob(path)
+    for file in data_files:
+        df = pd.read_csv(file)
+        totals = df[df['Label'] == 'TOTAL']
+        totals['Label'] = 'Avg. Response Time'
+
+        avg_response_time = totals['Average'].values[0]
+        std_dev = totals['Std. Dev.'].values[0]
+
+        legend_name = split_last_slash_first_dot(file)
+        legend_name = legend_name.split('_', 1)[1] if '_' in legend_name else legend_name
+
+        print(f"  Test Case: {legend_name}")
+        print(f"    Avg. Res. Time: {avg_response_time:.2f} ms")
+        print(f"    Std. Dev. : {std_dev:.2f} ms")

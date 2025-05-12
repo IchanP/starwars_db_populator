@@ -7,15 +7,12 @@ import numpy as np
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-# TODO - Set me!a
-experiment_number = 2
-
 # TODO - Set me!
-machine = 1
+experiment_number = 3
+# TODO - Set me!
+machines = [1, 2]
 
 font_size = 38
-
-base_dir = f"./data/data_machine_{machine}/"
 
 experiment_dirs = {
     1: ["100", "200", "300", "400", "500"],
@@ -24,7 +21,6 @@ experiment_dirs = {
 }
 
 directories = experiment_dirs[experiment_number]
-average_cpu_usage = {directory: {} for directory in directories}
 
 def process_cpu_files(file_list, directory_name):
     dfs = []
@@ -51,40 +47,64 @@ def process_cpu_files(file_list, directory_name):
     # Calculate overall average and standard deviation
     total_average = combined_df.mean().mean()
     std_dev = np.std(all_values)
-    average_cpu_usage[directory_name][file_list[0].split('/')[-1].split('_')[0]] = total_average
 
     return total_average, std_dev
 
-# Process data and collect averages and standard deviations
-averages = []
-std_devs = []
+# Collect data for both machines
+machine_data = {}
+for machine in machines:
+    base_dir = f"./data/data_machine_{machine}/"
+    averages = []
+    std_devs = []
+    for directory in directories:
+        combined_file_paths = glob.glob(os.path.join(base_dir, directory, "Combined*.csv"))
+        avg, std = process_cpu_files(combined_file_paths, directory)
+        averages.append(avg)
+        std_devs.append(std)
+    machine_data[machine] = {'averages': averages, 'std_devs': std_devs}
 
-for directory in directories:
-    combined_file_paths = glob.glob(os.path.join(base_dir, directory, "Combined*.csv"))
-    avg, std = process_cpu_files(combined_file_paths, directory)
-    averages.append(avg)
-    std_devs.append(std)
+# Create the figure
+fig = go.Figure()
 
-# Create bar chart with error bars
-fig = go.Figure(data=[
-    go.Bar(
-        name='CPU Usage',
-        x=directories,
-        y=averages,
-        text=[f'{avg:.1f}%' for avg in averages],
-        textangle=0,
-        cliponaxis=False,  
-        textfont=dict(size=48),  
-        error_y=dict(
-            type='data',
-            array=std_devs,
-            visible=True,
-            color='black',
-            thickness=3.5,
-            width=6
-        )
+# Add bars for Machine 1 (blue)
+fig.add_trace(go.Bar(
+    name='Machine 1',
+    x=directories,
+    y=machine_data[1]['averages'],
+    text=[f'{avg:.1f}%' for avg in machine_data[1]['averages']],
+    textangle=0,
+    cliponaxis=False,
+    textfont=dict(size=48),
+    marker_color='blue',
+    error_y=dict(
+        type='data',
+        array=machine_data[1]['std_devs'],
+        visible=True,
+        color='black',
+        thickness=3.5,
+        width=6
     )
-])
+))
+
+# Add bars for Machine 2 (red)
+fig.add_trace(go.Bar(
+    name='Machine 2',
+    x=directories,
+    y=machine_data[2]['averages'],
+    text=[f'{avg:.1f}%' for avg in machine_data[2]['averages']],
+    textangle=0,
+    cliponaxis=False,
+    textfont=dict(size=48),
+    marker_color='red',
+    error_y=dict(
+        type='data',
+        array=machine_data[2]['std_devs'],
+        visible=True,
+        color='black',
+        thickness=3.5,
+        width=6
+    )
+))
 
 # Update layout
 fig.update_layout(
@@ -104,15 +124,9 @@ fig.update_layout(
         title_text='CPU Usage (%)',
         title_font=dict(size=font_size),
         tickfont=dict(size=font_size),
-        range=[0, max(averages) * 1.1]
-    )
+        range=[0, max(max(machine_data[1]['averages']), max(machine_data[2]['averages'])) * 1.1]
+    ),
+    barmode='group'  # Display bars side by side
 )
 
 fig.show()
-
-# Print the relative CPU usage per directory and file type
-# for directory, file_types in average_cpu_usage.items():
-#     print(f"\nDirectory: {directory}")
-#     for file_type, avg_cpu in file_types.items():
-#         relative = ((avg_cpu / baseline_avg) - 1) * 100
-#         print(f"  {file_type}: {avg_cpu:.2f}% ({relative:+.1f}% vs baseline)")
