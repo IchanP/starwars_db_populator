@@ -8,10 +8,10 @@ import numpy as np
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # TODO - Set me!a
-experiment_number = 3
+experiment_number = 2
 
 # TODO - Set me!
-machine = 2
+machine = 1
 
 font_size = 38
 

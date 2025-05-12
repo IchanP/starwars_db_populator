@@ -37,11 +37,11 @@ const schema = makeExecutableSchema({
 
 server.register(mercurius, {
   schema,
-  resolvers,
+  resolvers: cacheResolvers,
   graphiql: true,
   path: "/graphql",
   // NOTE comment out when needed
-  // allowBatchedQueries: true,
+  allowBatchedQueries: true,
   context: () => {
     return {
       prisma: server.prisma,

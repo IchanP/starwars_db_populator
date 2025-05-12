@@ -16,10 +16,10 @@ font_size = 38
 
 # TODO - Set me!
 # Experiment number (1, 2, or 3)
-experiment_number = 3
+experiment_number = 2
 # TODO - Set me!
 # Machine (1, 2)
-machine = 2
+machine = 1
 
 no_work_directory = "no_work"
 
