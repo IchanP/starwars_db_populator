@@ -8,7 +8,7 @@ import numpy as np
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # TODO - Set me!
-experiment_number = 3
+experiment_number = 1
 # TODO - Set me!
 machines = [1, 2]
 
@@ -116,7 +116,7 @@ fig.update_layout(
         color='black'
     ),
     xaxis=dict(
-        title_text='Implementation Type',
+        title_text='Test Cases',
         title_font=dict(size=font_size),
         tickfont=dict(size=font_size)
     ),

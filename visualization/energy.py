@@ -17,7 +17,7 @@ font_size = 38
 
 # TODO - Set me!
 # Experiment number (1, 2, or 3)
-experiment_number = 2
+experiment_number = 1
 # TODO - Set me!
 # Machines to analyze (list)
 machines = [1, 2]
@@ -95,28 +95,45 @@ fig = go.Figure()
 # Define colors for machines
 machine_colors = {1: 'blue', 2: 'red'}
 
-# Add bars for each machine
-for i, directory in enumerate(directories):
-    for machine in machines:
-        fig.add_trace(go.Bar(
-            name=f'Machine {machine}',
-            x=[directory],
-            y=[machine_data[machine]['relative_averages'][i]],
-            offsetgroup=directory,
-            marker_color=machine_colors[machine],
-            text=[f'{machine_data[machine]["relative_averages"][i]:+.1f}%'],
-            textposition='outside',
-            textfont=dict(size=36),
-            cliponaxis=False,
-            error_y=dict(
-                type='data',
-                array=[machine_data[machine]['relative_std_devs'][i]],
-                visible=True,
-                color='black',
-                thickness=2.5,
-                width=6
-            )
-        ))
+# Add bars for Machine 1 (blue)
+fig.add_trace(go.Bar(
+    name='Machine 1',
+    x=directories,
+    y=machine_data[1]['relative_averages'],
+    text=[f'{avg:+.1f}%' for avg in machine_data[1]['relative_averages']],
+    textposition='outside',
+    textfont=dict(size=36),
+    cliponaxis=False,
+    marker_color='blue',
+    error_y=dict(
+        type='data',
+        array=machine_data[1]['relative_std_devs'],
+        visible=True,
+        color='black',
+        thickness=2.5,
+        width=6
+    )
+))
+
+# Add bars for Machine 2 (red)
+fig.add_trace(go.Bar(
+    name='Machine 2',
+    x=directories,
+    y=machine_data[2]['relative_averages'],
+    text=[f'{avg:+.1f}%' for avg in machine_data[2]['relative_averages']],
+    textposition='outside',
+    textfont=dict(size=36),
+    cliponaxis=False,
+    marker_color='red',
+    error_y=dict(
+        type='data',
+        array=machine_data[2]['relative_std_devs'],
+        visible=True,
+        color='black',
+        thickness=2.5,
+        width=6
+    )
+))
 
 # Update layout
 fig.update_layout(
@@ -128,7 +145,7 @@ fig.update_layout(
         color='black'
     ),
     xaxis=dict(
-        title_text='Implementation Type',
+        title_text='Test Cases',
         title_font=dict(size=font_size),
         tickfont=dict(size=font_size)
     ),
